@@ -1,0 +1,1708 @@
+%\documentclass[a4j]{gjisbook}
+
+\documentclass[a4j,10pt,oneside,openany]{jsbook}
+\usepackage[dvipdfmx]{graphicx}
+
+\usepackage{amsmath,amssymb}
+
+\usepackage{ascmac}
+\usepackage{makeidx}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{bm}
+\usepackage{subfiles}
+\usepackage{siunitx}
+\usepackage{latexsym}
+\usepackage{breqn}
+\usepackage{mathrsfs}
+
+
+%\documentclass[b5j，tombow]{gjisbook}   %トンボ(タイムスタンプあり)出力用
+%\documentclass[b5j，tombo]{gjisbook}    %トンボ(タイムスタンプなし)出力用
+%\usepackage{multicol}
+\makeindex
+
+\newcommand{\diff}{\mathrm{d}}  %微分記号
+\newcommand{\dive}{\mathrm{div}\,}  %ダイバージェンス
+\newcommand{\grad}{\mathrm{grad}\,}  %グラディエント
+\newcommand{\rot}{\mathrm{rot}\,}  %ローテーション
+\newcommand{\vE}{\boldsymbol{E}}
+\newcommand{\vB}{\boldsymbol{B}}
+\newcommand{\vi}{\boldsymbol{i}}
+\newcommand{\vH}{\boldsymbol{H}}
+\newcommand{\vD}{\boldsymbol{D}}
+\newcommand{\vn}{\boldsymbol{n}}
+\newcommand{\vs}{\boldsymbol{s}}
+\newcommand{\ve}{\boldsymbol{e}}
+\newcommand{\vk}{\boldsymbol{k}}
+\newcommand{\vr}{\boldsymbol{r}}
+\newcommand{\vA}{\boldsymbol{A}}
+\newcommand{\vp}{\boldsymbol{p}}
+\newcommand{\del}{\partial}
+
+%\raggedbottom
+\setlength{\textwidth}{\fullwidth}
+\setlength{\textheight}{44\baselineskip}
+\addtolength{\textheight}{\topskip}
+\setlength{\voffset}{-0.6in}
+
+
+\begin{document}
+
+%% \chapter %%
+\chapter{放射線計測／電磁波計測／粒子計測}%実験課題名
+
+%% \section %%
+\section{概要}
+\begin{description}
+  % \item[担当教員]\mbox{}\\
+  \item {\bf 担当教員}\\
+  \hspace{1em}放射線・電磁波計測 : 石野（7818 ishino@science）\\
+  \hspace{1em}粒子計測 : 小汐（7817 koshio@science）
+  \item {\bf 集合場所}\\
+  \hspace{1em}コラボレーション棟３F・コラボレーション室(１回目のみ），コラボレーション棟６F・リフレッシュルーム（2回目以降）
+  \item {\bf 実験場所}\\
+  \hspace{1em}放射線計測・電磁波計測：コラボレーション棟３F講義室，６F・610号室，\\
+  \hspace{1em}粒子計測：自然科学研究科棟６F・615号室
+  \item {\bf 実験の進め方}\\
+  \hspace{1em}第1回目は，放射線・素粒子・宇宙線に関する講義を，コラボレーション棟３Fコラボレーション室で行う．
+  2回目以降は実験を行う．最初の3回は，
+  放射線計測(ゲルマニウム半導体検出器)及び電磁波計測，次の3回は粒子計測の順番で行う．
+  それぞれに課題があるので，レポートにまとめる．
+  \begin{itemize}
+    \item {\bf ゲルマニウム半導体検出器実験}~~ゲルマニウム半導体検出器の検出原理，放射線計測
+    \item {\bf BS・CSアンテナによる電磁波計測実験}~~静止衛星が発信する周波数12GHzの電磁波を計測することで，ビームパターンの計測や電波天文学で重要な概念となるスカイマップを作成する
+    \item {\bf 自作アンテナによる電磁波の放射と検出実験}~~アンテナを自作することで電磁波の放射と検出の原理を理解する．また，アンテナの指向性を上げるために開発された八木アンテナを自作し，その性能評価を行う
+    \item {\bf 粒子計測1回目}~~検出器の動作原理（プラスチックシンチレーションカウンター，光電子倍増管）エレクトロニクス，同軸ケーブルと特性インピーダンスの理解，同時計測の方法，検出器とエレクトロニクスの調整
+    \item {\bf 粒子計測2回目}~~データ収集のまとめ，最小二乗法，$\chi^2$乗検定，重み付きのフィットについて，議論とまとめ
+  \end{itemize}
+  \item {\bf レポート提出}\\
+  放射線・電磁波計測については石野（コラボレーション棟603号室）に，\\
+  粒子計測については小汐（コラボレーション棟 602 号室）に提出．
+  \item {\bf 注意事項}\\
+  ゲルマニウム半導体検出器は衝撃に大変弱く高価なので， 取扱いに注意すること．また，検出器動作中は 1000V 以上の高電圧がかかっているので， むやみにケーブルを触らないこと．鉛は毒なので，触るときは軍手をつけること．
+\end{description}
+
+%% \section
+\section{基礎的事項}\label{sec:basic}
+%背景を記入
+\subsection{はじめに}
+不安定な原子核や原子・素粒子が崩壊して安定な状態になるときに，粒子が発生する．その粒子を総称して{\bf 放射線}という．
+そして，放射線を出す能力のことを{\bf 放射能}という．放射線は，1896年にベクレルによって発見された．
+それ以来，放射線は物理の分野のみならず，放射線医学，放射化学，年代測定等，その利用・応用例は枚挙にいとまがない．
+従って，放射線の基礎知識を身に付けることは，将来どの研究・技術分野に進んでも決して無駄にはならない．
+放射線を出すような不安定な原子核は，同種の安定な原子核と比較して，{\bf 放射性同位元素}または{\bf 放射性同位体}と呼ばれる．
+
+放射線には，$\alpha$線（陽子2個，中性子2個からなるヘリウム原子核），
+$\beta$線（電子または陽電子線），$\gamma$線（不安定な原子核が放出する
+高いエネルギーを持つ光子），$X$線（不安定な原子が放出する光子），
+中性子線等がある．エネルギーが高い不安定な状態にある原子核や原子・素粒子は，
+強い相互作用，電磁相互作用，弱い相互作用のいずれかの相互作用を通じて，よりエネルギーの低い安定な状態に変化する．
+このときに放出されるエネルギーが放射線の形で外に放出される．
+これらの相互作用は$10^{-12}$cm以下の極微な空間で起こるので，量子力学の本質的な理解を得ることができる．
+
+放射線源には，人工的なものとして，今回の実験で使用するような$^{60}$Coや$^{137}$Csのような
+放射線核種，電子や陽子やイオンの加速器で得られるビーム，$X$線発生装置，あるいは原子炉からの中性子線等が挙げられる．
+一方自然界に存在するものとして，地殻や地表に存在するU(ウラン），Th(トリウム），$^{40}$K等の
+放射線核種，地球外からやってくる高エネルギー陽子が大気とぶつかることにより生じる宇宙線$\mu$粒子等がある．
+我々は絶えずそれらの放射線を浴びており，その放射線量は1年間に約2mSv(ミリシーベルト)である．
+
+放射線は物質を電離する性質を持つ．このため，生体細胞を傷つける可能性がある．
+従って，放射線測定においてなるべく被曝しないよう，安全につとめる必要がある．
+今回の実験で使用する線源は大変弱いものであるが，放射線測定技術の基本として，被曝の防護についての
+基本的なことを身に付けることも目的のひとつである．
+
+\subsection{原子・原子核}
+
+\subsubsection{原子}
+
+われわれも含めて全ての物質は原子からできている．
+原子はさらに，その中心に存在する正の電荷を持つ原子核と，その回りを回っている負電荷をもつ電子からなる．
+それらの電子は決まった軌道のみを回ることができ，内側から$K，~L，~M，\cdots$軌道と呼ばれる．
+原子の大きさは約$10^{-10}$mである．
+一方，原子核の大きさは$10^{-14}$mで，原子の大きさの約10000分の1である．
+陽子や中性子の質量は電子の約2000倍であり，原子の質量の殆どは原子核に集中している．
+
+\subsubsection{原子核}
+
+原子核は$Z$個の陽子と$N$個の中性子から構成されている．
+$Z$を{\bf 原子番号}という．
+陽子と中性子は殆ど同じ質量~\footnote{中性子のほうが陽子より1．3MeVだけ重い．
+従って，原子核に捕獲されていない裸の中性子は$\beta$崩壊して，陽子になる．}
+をもっており，それらの数の和$A=Z+N$を{\bf 質量数}という．
+また，陽子と中性子はまとめて核子と呼ばれる．
+核子間には強い引力相互作用が働き，核子を原子核の狭い領域に閉じ込めている．
+
+原子番号$Z$と質量数$A$を持つ原子核を核種と呼び，$^{A}_Z X$と表わす．
+このような核種の回りには，原子核の電荷を打ち消すために，$Z$個の電子が回っている．
+
+同じ原子番号を持つが，質量数の異なる核種は{\bf 同位体（同位元素）}と呼ばれる．
+同位体には安定なものと，不安定なものが存在し，不安定な同位体は放射線を出して，より安定な原子核（安定同位体）になる．
+\footnote{最も重い安定同位体は21世紀初頭までは$^{209}$Bi（ビスマス）だと
+考えられていたが，2003年にわずかに$\alpha$崩壊することが
+確認された．その寿命は$1．9\times 10^{19}$年で，宇宙の年齢の10億倍である．
+現在考えられる最重量安定同位体は$^{208}$Pbである．}
+
+%\includegraphics[width=8cm]{rad-fig01.eps}
+
+\begin{figure}
+  \begin{center}
+    \includegraphics{rad-fig01.eps}%eps file 名を{}内へ入れる
+  \end{center}
+  \caption{核子一つあたりの結合エネルギー}%figure captionを{}内へ入れる
+  \label{fig:rad-fig01}%図のラベルを:の後ろに入れる
+\end{figure}
+
+
+安定な原子核の質量は，その構成要素である核子1個1個の質量の総和よりも僅かに軽い．
+この差を{\bf 質量欠損}という．
+質量欠損分を$\Delta m$とすると，
+\begin{equation}
+  E = \Delta m c^2
+\end{equation}
+のエネルギーが生じ，
+その一部が結合エネルギーに使われる．
+図~\ref{fig:rad-fig01}のように，結合エネルギーは核種によって違い，核子ひとつあたりの
+結合エネルギーが最も大きいのは$^{56}$Feである．
+
+\subsection{放射線}
+
+この章では，$\alpha$，$\beta$，$\gamma$線の放射線について述べる．
+これら三つの放射線は，それぞれ強い相互作用，弱い相互作用，電磁相互作用によって生じる．
+
+\subsubsection{$\alpha$線}
+
+$\alpha$線は，陽子二つと中性子二つからできているヘリウム原子核であり，
+不安定原子核が崩壊することによって生じる．
+\begin{equation}
+  ^{A}_{Z}\mbox{X}\to ^{A-4}_{Z-2}\mbox{Y}+\alpha
+\end{equation}
+つまり$\alpha$崩壊によって，原子核は質量数が4，原子番号が2だけ減る．
+$\alpha$崩壊する前の原子核の質量は，崩壊後の娘核と$\alpha$粒子の
+質量の和よりも大きい．つまり質量が欠損する．
+この欠損した質量を$\Delta m$とすると，
+エネルギー$E=\Delta m c^2$が，娘核と$\alpha$線の運動エネルギーに転換される．
+$\alpha$崩壊を引き起こす原子核はたいてい$\alpha$粒子と比較して$20\sim 60$倍
+重い．従って，$\alpha$粒子がこの運動エネルギーの殆どを持ち出して，核外に飛び出す．
+$\alpha$崩壊が起きる確率は，核内で核表面に$\alpha$粒子が現れる確率と
+$\alpha$粒子がトンネル効果でクーロンポテンシャル壁を通過する確率で決定される．
+
+$\alpha$粒子は低速で電荷$+2$をもっているため，物質中で電離する能力が大変大きい．
+運動エネルギーは典型的に$4\sim 8$MeV程度であり，空気中では数cmの飛程距離である．
+水または組織中での飛程は空気中の約1/500であり，取り扱うときはゴム手袋をつければ良い．
+しかし，大変強い電離能力のために，$\alpha$線源が体内に入ると大変危険である．
+$\alpha$線源を扱うときは，くれぐれも体内に入れないように注意しなくてはならない．
+
+\subsubsection{$\beta$線}
+
+$\beta$線は，エネルギーを持つ電子または陽電子であり，放射性原子核が$\beta$崩壊するときに発生する．
+電子が発生する場合は$\beta^-$崩壊，陽電子の場合は$\beta^+$崩壊といい，
+どちらが起きるかは，放射性核種に依存する．
+
+原子核の$\beta^-$崩壊では，原子核内の中性子が陽子に変換され，電子と反ニュートリノが放出される．
+\begin{equation}
+  ^A_Z\mbox{X}\to ^{A}_{Z+1}\mbox{Y} + e^- + \overline{\nu_e}
+\end{equation}
+素過程で書くと，
+\begin{equation}
+  'n' \to 'p' + e^- + \overline{\nu_e}
+\end{equation}
+である．
+ここで，$'~~'$は原子核内に束縛され，質量が見かけ上自由粒子と異なることを意味している．
+この崩壊は3体崩壊なので，$\beta$線（電子）のエネルギースペクトルは連続分布となる．
+Pauliはこの$\beta$線のエネルギー分布から，相互作用が大変弱い中性粒子が存在することを1930年に予言した．
+この中性粒子（ニュートリノ）は1956年に発見された．
+
+$\beta^+$崩壊では，原子核の陽子が中性子に変換され，陽電子とニュートリノが放出される．
+\begin{equation}
+  ^A_Z\mbox{X} \to ^{A}_{Z-1}\mbox{Y} + e^+ + \nu_e
+\end{equation}
+素過程では，
+\begin{equation}
+  'p'\to 'n' + e^+ + \nu_e
+\end{equation}
+である．
+放出された陽電子は，回りの電子と結合し，{\bf ポジトロニウム}~\footnote{
+電子と陽電子の束縛状態．
+水素原子の陽子が陽電子に置き換わったものと考えればよい．
+おおきな違いは，電子と陽電子は同じ質量を持つので，
+お互いがお互いの回りを回る運動をする．}
+をつくり，やがて対消滅する．
+対消滅後は，二つの$\gamma$線になり，それぞれの$\gamma$線のエネルギーは
+電子の静止質量エネルギー$m_e c^2 = 511$keVである．
+
+$\beta^+$崩壊する核種は大抵，{\bf 軌道電子捕獲(Electron Capture， EC)}と
+競合する．この過程は，$\beta^+$崩壊の変形で，
+$p + e^- \to n + \nu_e$である．ここで，$e^-$は原子の中の軌道電子
+（通常は$K$軌道電子）である．
+一般的な表現は，
+\begin{equation}
+  ^A_Z\mbox{X} +e^- \to ^{A}_{Z-1}\mbox{Y} + \nu_e
+\end{equation}
+である．
+
+軌道電子捕獲が起きると，軌道電子が消失するので，
+よりエネルギーが高い状態にいる軌道電子がその空席を占めようとする．
+そのエネルギー差が電磁波として外に放出される．
+これが{\bf 特性$X$線}である．
+また，このエネルギーが電磁波ではなく，軌道電子に与えられ，
+電子が外に飛び出ることがある．これを{\bf オージェ電子}という．
+
+\subsubsection{$\gamma$線}
+
+励起状態の原子核が基底状態になるときに，電磁波を放射する．
+この放射を$\gamma$線という．
+励起状態の原子核は$\alpha$，$\beta$崩壊後の殆どの場合に生じる．
+図~\ref{fig:rad-fig02-3}，\ref{fig:rad-fig04-5}は$\beta$崩壊とそれに伴う
+$\gamma$崩壊の崩壊図を示す．
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=7cm]{rad-fig02.eps}
+    \includegraphics[width=7cm]{rad-fig03.eps}
+    \caption{$^{60}$Co.$^{137}$Csの崩壊図}
+    \label{fig:rad-fig02-3}
+  \end{center}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=7cm]{rad-fig04.eps}
+    \includegraphics[width=7cm]{rad-fig05.eps}
+    \caption{$^{22}$Na，$^{40}$Kの崩壊図}
+    \label{fig:rad-fig04-5}
+  \end{center}
+\end{figure}
+
+\subsection{原子核の壊変}\label{sec:decay}
+
+不安定な原子核が$\alpha$線，または$\beta$線を放出して
+別の種類の原子核になる過程を{\bf 壊変}という．
+
+\subsubsection{壊変の法則}
+
+原子核の壊変は，時間のみに依存する．
+また，壊変は確率的に起きるので，ランダムに起きる\footnote{
+このランダムさを利用し，乱数生成に応用することも考えられている．}
+のであるが，平均的にみるとある規則に従う．
+
+ある時刻$t$で$N(t)$個の不安定原子核があるとする．
+時間$t\sim t+\Delta t$の間に壊変する原子核の数は，
+時刻$t$の不安定原子核の数と，その時間間隔$\Delta t$に比例すると考えられるので，
+\begin{equation}
+  N(t+\Delta t) - N(t) = -\lambda N(t)\Delta t
+  \label{eq:decay-rate}
+\end{equation}
+ここで，$\lambda$は{\bf 崩壊定数}と呼ばれる定数で，
+不安定原子核種に依存する．
+式(\ref{eq:decay-rate})は，$\Delta t \to 0$の極限をとると，
+次の微分方程式になる：
+\begin{equation}
+  \frac{dN(t)}{dt} = -\lambda N(t)
+  \label{eq:decay-rate-diff-eq}
+\end{equation}
+この微分方程式はすぐに解くことができ，
+\begin{equation}
+  N(t) = N(0)e^{-\lambda t}
+  \label{eq:decay-low}
+\end{equation}
+である．ここで$N(0)$は時刻$t=0$での不安定原子核の数である．
+このように，不安定原子核種は指数関数的に減少していく．
+
+\subsubsection{半減期}
+
+時刻$t=0$に存在していた不安定原子核の数が半分にまで減少する
+時間を{\bf 半減期}という．
+不安定原子核の寿命を表すときは，大抵この半減期を用いる．
+半減期を$T_{1/2}$と表せば，
+\begin{equation}
+  N(t) = N(0)\left(\frac{1}{2}\right)^{\frac{t}{T_{1/2}}}
+  \label{eq:half-life}
+\end{equation}
+である．式(\ref{eq:decay-low})と式(\ref{eq:half-life})を
+等しいとおけば，$e^{-\lambda t} = 2^{-t/T_{1/2}}$であるから，
+\begin{equation}
+  T_{1/2} = \frac{\ln 2}{\lambda} = \frac{0．693}{\lambda}
+\end{equation}
+の関係を得る．
+
+\subsubsection{放射能の強さ}
+
+単位時間に壊変する数，すなわち{\bf 壊変率}は，
+一秒当たりの壊変数として定義され，その単位をベクレル [Bq] \footnote{
+旧単位ではキューリー [Ci] が使われていた．1[Ci] = 3．7$\times 10^{10}$ [Bq]
+である．}
+という．
+壊変率は以下の式で表される．
+\begin{equation}
+  \frac{N(t)-N(t+\Delta t)}{\Delta t} = -\frac{dN(t)}{dt}
+  =\lambda N(t) = \lambda N(0)e^{-\lambda t}
+  =e^{-\lambda t}\frac{dN(0)}{dt}
+\end{equation}
+ここで，式(\ref{eq:decay-rate-diff-eq})と(\ref{eq:decay-low})を使った．
+つまり，時刻$t$での壊変率は，時刻$t=0$での壊変率に$e^{-\lambda t}$を
+かけたものになる．
+
+\subsubsection{ポアソン分布}
+
+不安定原子核の壊変はランダムに起きるので，統計的変動が存在する．
+ある時間$\Delta t$の間に平均$m$個壊変が起きる不安定原子核があるとしよう．
+実際にはその時間の間に起きる壊変の数は，$m$より大きいことも
+あれば，小さいこともある．実際に起きる壊変数を$n$とすると，
+$n$は{\bf ポアソン分布}に従うことが知られている．
+\begin{equation}
+  P(n，m) = \frac{m^n}{n!}e^{-m}
+  \label{eq:poisson}
+\end{equation}
+ポアソン分布の導出は付録~\ref{appendix-a}に示す．
+
+ポアソン分布の式から，
+\begin{eqnarray}
+  && \sum_{n=0}^{\infty}P(n，m) = 1
+  \label{eq:poisson-prob} \\
+  \langle n \rangle &=& \sum_{n=0}^{\infty}nP(n，m)  =m
+  \label{eq:poisson-mean} \\
+  \sigma^2 &=& \langle(n-\langle n\rangle)^2\rangle =
+  \sum_{n=0}^{\infty}(n-m)^2P(n，m) = m
+  \label{eq:poisson-rms}
+\end{eqnarray}
+を得る．ここで，$\langle n\rangle$は$n$の平均値を示す．
+式(\ref{eq:poisson-prob})は全確率の和が1になることを示している．
+式(\ref{eq:poisson-mean})はポアソン分布の平均が$m$であることを意味している．
+式(\ref{eq:poisson-rms})は分布の分散が$\sigma = \sqrt{m}$であることを
+示している．
+$\sigma$は分布の広がりの程度を表わす．
+
+放射線核種からの壊変率を測定すると，我々は$n$という量を得るが，
+これは真の壊変率の値$m$とは必ずしも一致しない．
+そこで我々は，真の値が存在するであろう範囲を測定結果から類推する．
+真の値は知らないので測定値で代用すると，分布の分散は$\sqrt{n}$と
+なる．したがって，真の値$m$は$n\pm\sqrt{n}$の範囲にあると
+予想するのである．$\sqrt{n}$を{\bf 統計誤差}という．
+
+何か物理量$f$を測定する時には，必ず$f$の測定誤差$\sigma_f$を考えて，
+実験結果として，$f\pm\sigma_f$と値を与えるのがならわしである．
+
+\subsubsection{誤差の伝播}
+
+実験結果からある物理量を誤差つきで与えるとき，
+{\bf 誤差の伝播}を考慮しなければならない．
+例えば，ある物理量$f$が二つの測定量$a$，$b$に依存
+するものとする．つまり，$f=f(a，~b)$であるとする．
+$a$，$b$の誤差をそれぞれ$\sigma_a$，$\sigma_b$とするときに，
+$f$の誤差$\sigma_f$を求めることを考える．
+$f$の微少量変化$\delta f$は，
+\begin{equation}
+  \delta f = \frac{\partial f}{\partial a}\delta a
+  + \frac{\partial f}{\partial b}\delta b
+\end{equation}
+となる．$\sigma_f^2=\langle (\delta f)^2 \rangle$であるので，
+\begin{eqnarray}
+  \sigma_f^2 &=&
+  \left\langle
+  \left(
+  \frac{\partial f}{\partial a}\delta a
+  + \frac{\partial f}{\partial b}\delta b
+  \right)^2
+  \right\rangle \nonumber \\
+  &=&
+  \left(\frac{\partial f}{\partial a}\right)^2\langle(\delta a)^2\rangle
+  + 2\frac{\partial f}{\partial a}\frac{\partial f}{\partial b}
+  \langle\delta a\delta b\rangle
+  +\left(\frac{\partial f}{\partial b}\right)^2\langle(\delta b)^2\rangle
+  \nonumber \\
+  &=&
+  \left(\frac{\partial f}{\partial a}\right)^2\sigma_a^2
+  + \left(\frac{\partial f}{\partial b}\right)^2\sigma_b^2
+\end{eqnarray}
+ここで，測定量$a$，$b$には相関が無いものとすると，
+$\langle\delta a \delta b\rangle=0$になることを使った．
+
+一般にある物理量$f$が$n$個の測定量$x_i~(i=1，~\cdots，~n)$に依存
+し，それぞれの測定誤差量を$\sigma_{x_i}$とすれば，
+$f$の誤差$\sigma_f$は次の式で与えられる：
+\begin{equation}
+  \sigma_f^2=\sum_{i=1}^n
+  \left(\frac{\partial f}{\partial x_i}\right)^2 \sigma_{x_i}^2
+\end{equation}
+
+
+\subsection{$\gamma$線と物質の相互作用}
+
+$\gamma$線も$X$線もエネルギーが高い電磁波なので，
+ここでは統一して$\gamma$線と呼ぶ．
+また，$\gamma$線（に限らず全ての波長の光）は物質と相互作用する際に，
+あたかも粒子のようにふるまうので，{\bf 光子}とも呼ぶ．
+$\gamma$線が物質にはいると，主に{\bf 光電効果}，{\bf コンプトン散乱}，
+{\bf 電子対生成}の相互作用を起こす．
+これらの相互作用を起こすと，$\gamma$線は消失したり，
+エネルギーの一部を失ったりする．
+どの相互作用が効くのかは，$\gamma$線のエネルギーや物質に依存する．
+図~\ref{fig:rad-fig06}はそれぞれの相互作用の様子を示している．
+
+
+\begin{figure}[]
+  \begin{center}
+    \includegraphics[width=11cm]{rad-fig06.eps}
+    \caption{$\gamma$線の物質での相互作用}
+    \label{fig:rad-fig06}
+  \end{center}
+\end{figure}
+
+\subsubsection{$\gamma$線の線吸収係数}
+
+$\gamma$線のビーム強度，すなわち単位時間あたり単位面積あたりを
+通過する$\gamma$線の数$I$は，物質中を$x$だけ進むと，指数関数的に減少する．
+\begin{equation}
+  I(x) = I(0)e^{-\mu x}
+  \label{eq:gamma-intensity}
+\end{equation}
+ここで，$\mu$は{\bf 線吸収係数}と呼ばれている．
+線吸収係数は，
+\begin{equation}
+  \mu = n\sigma = n(\sigma_{\rm photo} + \sigma_{\rm comp}+\sigma_{\rm pair})
+  \label{eq:absorption}
+\end{equation}
+ここで，$n$は単位体積あたりに含まれる原子の数，
+$\sigma$は原子一個あたりの{\rm 断面積}を表す．
+$\sigma_{\rm photo}$，$\sigma_{\rm comp}$，$\sigma_{\rm pair}$を
+それぞれ光電効果，コンプトン散乱，電子対生成の断面積とすると，
+$\sigma$はその和として表わされる．
+断面積は面積の次元をもっている．つまり，断面積は
+$\gamma$線がやってくると相互作用を起こす領域の面積を表わす．
+断面積が大きければ大きいほど，相互作用する確率が増えるのである．
+
+\subsubsection{光電効果}
+
+入射した$\gamma$線の全エネルギーが軌道電子に吸収されて，光電子に
+変換される反応である．光電子は運動エネルギー$T=h\nu - I_i$をもって，
+原子から飛び出す．ここで，$h\nu$は入射$\gamma$線のエネルギー，
+$I_i$はイオン化エネルギーである．
+光電効果は1MeV以下の低エネルギー領域で重要であり，
+それが起きる断面積は$\sigma_{\rm photo} \propto Z^5$である．
+
+\subsubsection{コンプトン散乱}
+
+$\gamma$線と自由電子の弾性散乱である．
+エネルギーと運動量保存則により，散乱後の
+$\gamma$線と電子のエネルギーは，
+\begin{eqnarray}
+  h\nu^{\prime} &=& \frac{h\nu}{1+\zeta(1-\cos\theta)}
+  \label{eq:compton-photon}\\
+  T_e &=& h\nu\frac{\zeta(1-\cos\theta)}{1+\zeta(1-\cos\theta)}\nonumber\\
+  &=& h\nu\frac{2\zeta\cos^2\phi}{(1+\zeta)^2-\zeta^2\cos^2\phi}
+  \label{eq:compton-electron}\\
+  \tan\phi &=& \frac{1}{(1+\zeta)\tan(\theta/2)}
+  \label{eq:compton-angle}
+\end{eqnarray}
+となる．
+ここで，$h\nu$は入射$\gamma$線のエネルギー，
+$h\nu^{\prime}$は散乱後の$\gamma$線のエネルギー，
+$\theta$は$\gamma$線の散乱角，
+$T_e$は反跳電子の運動エネルギー，
+$\phi$は反跳電子の入射$\gamma$線の方向に対する角度であり，
+$\zeta=h\nu/m_ec^2$，$m_ec^2 = 511$keVは電子の静止質量である．
+式(\ref{eq:compton-electron})からわかるように，
+電子の運動エネルギー$T_e$は$\gamma$線の散乱角度に依存する．
+$T_e$は$\phi=0^{\circ}$のとき，つまり$\theta=180^{\circ}$のとき
+（式(\ref{eq:compton-angle})をみよ），最大値
+\begin{equation}
+  T_e^{\rm max} = h\nu \frac{2\zeta}{1+2\zeta}
+\end{equation}
+をとる．
+$T_e$の分布をみると，$T_e^{\rm max}$のところでエッジのように
+見えるので，これを{\bf コンプトンエッジ}と呼ぶ．
+
+電子と$\gamma$線の散乱角度の確率は，量子電磁力学を用いて計算され，次の
+微分断面積で表される．
+\begin{equation}
+  \frac{d\sigma}{d\Omega}=\frac{r_0^2}{2}
+  \left(\frac{h\nu^{\prime}}{h\nu}\right)^2
+  \left(\frac{h\nu}{h\nu^{\prime}}+\frac{h\nu^{\prime}}{h\nu}-\sin^2\theta\right)
+\end{equation}
+ここで，$d\Omega=d(\cos\theta)d\phi$，
+$r_0$は古典電子半径で，
+\begin{equation}
+  r_0 = \frac{e^2}{4\pi\varepsilon_0m_ec^2}=2．817\times 10^{-13}~{\rm cm}
+\end{equation}
+である．
+角度について積分すると，$\zeta \ll 1$のとき，原子一個あたりの断面積は，
+\begin{equation}
+  \sigma_{\rm photo} = Z\phi_0(1-2\zeta+5．2\zeta^2-13．3\zeta^3)
+\end{equation}
+となる．コンプトン散乱は電子と$\gamma$線との散乱なので，
+原子一個あたりの散乱断面積は原子内の電子の個数つまり$Z$に比例する．
+$\phi_0$はトムソン散乱の散乱断面積で，
+\begin{equation}
+  \phi_0 = \frac{8\pi}{3}r_0^2=6．65\times 10^{-25}~\mbox{cm$^2$}
+\end{equation}
+である．つまり低エネルギーではコンプトン散乱はトムソン散乱になる．
+
+\subsubsection{電子対生成}
+
+$\gamma$線のエネルギーが電子の静止質量の二倍以上，つまり1．02MeV以上になると，
+$\gamma$線は物質中で電子対生成，つまり，
+$\gamma$線の電子と陽電子の対への転化が起きる．
+この現象は，真空中ではエネルギー・運動量保存則を満さないので，決して起きない．
+しかし物質中では，原子核が運動量の一部を受け取ることができ，
+エネルギー・運動量保存則が満たされ，起こすことができる．
+対生成後の電子と陽電子の運動エネルギーを$T_-$，$T_+$とすると，
+良い近似で，
+\begin{equation}
+  T_- + T_+ = h\nu - 2m_ec^2 = h\nu - 1．02~{\rm MeV}
+\end{equation}
+である．電子と陽電子の静止質量エネルギー($2m_ec^2$)が，
+物質転化に使われ，残りが電子と陽電子の運動エネルギーになる．
+電子対生成は，$\gamma$線のエネルギーが1．02MeV以上になると，
+主要な過程となる．
+原子一つあたりの断面積は$Z^2$に比例する：($\sigma_{\rm pair}\propto Z^2$)．
+
+\subsection{課題}
+
+{\bf 課題 D1-1}~~~式(\ref{eq:poisson-mean})，(\ref{eq:poisson-rms})
+を示せ．
+
+{\bf 課題 D1-2}~~~式(\ref{eq:compton-photon})，
+(\ref{eq:compton-electron})，(\ref{eq:compton-angle})を示せ．
+
+\newpage
+%%%%%%%%%%
+%
+% Section 2
+%
+%%%%%%%%%%
+\section{ゲルマニウム半導体検出器実験}
+
+\subsection{はじめに}
+
+この章ではゲルマニウム半導体検出器の概要と実験内容についてのべる．
+まずは，半導体検出器について一般的な説明を与え，次に本実験で用いるゲルマニウム検出器の概要を述べる．
+%その後，1日目，2日目の実験内容の説明および課題を与える．
+
+\subsection{半導体検出器}
+
+\subsubsection{半導体}
+
+原子の中では電子はとびとびのエネルギー準位に存在する．
+一方物質中では，原子が規則的に配列されているために，電子が感じるポテンシャルも規則的になる．
+その結果，エネルギー準位はほぼ連続になり，ある群をつくる．この群を{\bf エネルギー帯}という．
+ひとつのエネルギー帯と別のエネルギー帯の間には，エネルギー準位が存在しないエネルギー領域があり，
+これを{\bf 禁制帯}という(図{\ref{fig:rad-fig07})．
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=14cm]{rad-fig07.eps}
+    \caption{いろいろな個体のエネルギー帯}
+    \label{fig:rad-fig07}
+  \end{center}
+\end{figure}
+
+
+電子はフェルミ・ディラック統計に従うため，あるエネルギー準位には二つの電子しかはいることができない
+（電子はスピン1/2を持つので，上向きスピンと下向きスピンを持つ電子が一つのエネルギー準位にはいることができる）．
+その結果，エネルギー準位はエネルギーの低い方から順々に埋まっていく．
+物質中の電子の数は有限なので，あるエネルギーより上の準位には電子が埋まらなくなる．
+その上限のエネルギーを{\bf フェルミエネルギー}と呼ぶ．
+
+物質には，電圧をかけたときに流れる電流の量（つまり抵抗の値）によって，
+{\bf 導体}，{\bf 不導体(絶縁体)}および，{\bf 半導体}にわけることができる．
+導体では，エネルギー帯の途中までしか電子が埋まっていない．
+つまり，フェルミエネルギーがエネルギー帯の中にある．
+エネルギー帯内ではエネルギー準位間が大変小さいので，
+熱エネルギーにより，電子は高いエネルギー準位に容易に移る
+ことができる．この電子は，物質中を容易に移動することができるため，
+{\bf 自由電子}と呼ばれる．またそのエネルギー帯を
+{\bf 伝導体}と呼ぶ．
+絶縁体では，フェルミエネルギーがエネルギー帯の一番上のエネルギー
+に相当する．このエネルギー帯を{\bf 充満帯}という．
+充満帯の上のエネルギーには禁制帯，その上には伝導帯が存在するが，
+絶縁体では禁制帯の幅（{\bf エネルギーギャップ})
+が大変大きいために，電流を流すためには，
+大変大きな電場を与えなければならない．
+
+半導体は導体と絶縁体の中間の性質を持つ．
+半導体内の電子のエネルギー分布には，絶縁体と同様に
+充満帯が存在する．この充満帯のことを特に
+{\bf 価電子帯}という．
+絶縁体と違うところは，
+その上のエネルギーギャップが比較的小さいので，
+熱エネルギーあるいは他の何らかの形でエネルギーを与えると，
+価電子帯の電子は容易にエネルギーギャップを乗り越え，
+伝導帯に移ることができる．
+ここに電場をかけると，伝導帯の電子と，価電子帯に空いた電子の孔
+（{\bf ホール})が移動し，電流が流れるのである．
+
+\subsubsection{半導体検出器における$\gamma$線の検出原理}
+
+半導体に$\gamma$線が入射されると，
+ある確率により，光電効果，コンプトン散乱，電子対生成が起きる．
+これらの現象が起きると，運動エネルギーを持つ電子（電子対生成の場合は
+電子と陽電子）が発生する．
+電子がどの運動エネルギーを持つかは，どの現象が起きたかに依存する．
+エネルギーを得た電子は半導体検出器の中を他の電子と散乱をしながら，
+エネルギーを失い，ある飛距離走ると止まる．
+この時に失われたエネルギーの一部は，価電子帯にある電子を伝導体に
+移すのに使われる．
+つまり，伝導電子とホールの対を作る．
+後述するゲルマニウム検出器では，1個の電子・ホール対を作るのに
+必要なエネルギーは約$3$eVである\footnote{
+1eVは，1個の電子が1Vの電圧で加速させられたときに
+得られるエネルギーで，1eV=$1．6\times 10^{-19}$Jである．} ．
+従って，運動エネルギー$T_e$~[eV]を持つ電子が作り出す
+電子・ホール対の数$N_e$は，
+\begin{equation}
+  N_e = \frac{T_e~[\mbox{eV}]}{3}
+\end{equation}
+である．
+例えば，1MeVの運動エネルギーを持つ電子はゲルマニウム検出器では，
+$1\times 10^6/3 = 3\times 10^5$個の電子・ホール対を作る．
+
+伝導体に移った電子はしばらくすると，
+エネルギーギャップを越えて価電子帯に落ちてくる．
+このとき放出されるエネルギーは
+熱エネルギーに変換される．
+エネルギーが付与されて生じた電子・ホールを
+回収するために，高電圧をかけて，
+電子とホールが対消滅する前に外部に電流として
+取り出す．この電荷量を測定することにより，
+検出器に付与されたエネルギー量を測定することができる．
+
+\subsubsection{エネルギー分解能}
+
+半導体検出器の大きな特徴は，他の検出器よりもエネルギー分解能
+が優れているという点である．
+一般に，あるエネルギー$E$が付与されたときに，一つのキャリアー
+(半導体検出器の場合は，電子とホールのペア)をつくるのに必要なエネルギーを
+$\varepsilon$とすれば，平均$n=E/\varepsilon$のキャリアーが生成される．
+しかし，キャリアーの生成過程は確率的なもので，必ず揺らぎが生じる．
+その揺らぎの大きさ$\sigma$は，生成数の数がポアソン分布になるので，
+$\sigma = \sqrt{n}$となる．
+$n$が十分大きければ，その分布はGauss分布になる．
+エネルギー分布の半値幅(FWHM，~Full Width Half Maximum)は
+$2．35\sigma$になる．エネルギー分解能$\Delta E/E$
+をFWHMを使って定義すると，
+\begin{equation}
+  \frac{\Delta E}{E} = \frac{2．35\sqrt{Fn}\varepsilon}{E}
+\end{equation}
+である\footnote{エネルギー分解能は，他にも電荷収集効率，電子回路のノイズ
+などにも依存する．}．
+ここで，$F$は{\bf Fano因子}と呼ばれ，
+$0\sim 1$の間をとる数で，実験値として$0．15$が得られている．
+Fano因子がつく原因としては，キャリアー生成が完全に
+ランダムな過程ではなく，ある程度相関を持って生じることが起因している．
+$n=E/\varepsilon$を代入して，
+\begin{equation}
+  \frac{\Delta E}{E} = \frac{2．35\sqrt{FE\varepsilon}}{E}
+  =2．35\sqrt{\frac{F\varepsilon}{E}}
+\end{equation}
+となる．したがって，エネルギー分解能は$\varepsilon$が小さいほど
+良くなる．NaI(Tl)シンチレ─タ検出器では一つのキャリア(シンチレ─ターの
+場合は光子)をつくるのに30eV弱のエネルギーが必要だが
+\footnote{シンチレ─ターの場合，エネルギー分解能は，光電子増倍管の
+量子効率がもっとも影響する．}，
+半導体検出器では，
+その1/10のエネルギーで十分なのである．
+
+
+\subsubsection{ゲルマニウム検出器}
+
+本実験で用いる検出器は高純度ゲルマニウム(Ge)検出器である．
+ゲルマニウム検出器の特性を表~\ref{table:ge-detector}に示す．
+ゲルマニウム検出器は，大きな質量数を持つために，
+ガンマ線の阻止能が大きいうえに，優れたエネルギー分解能を
+持つので，ガンマ線エネルギーの精密測定に用いられる．
+一方，バンドギャップが0．7eVと小さいので，室温の熱エネルギー
+により容易に価電子が伝導帯に励起され，大きなノイズが発生するので，
+通常液体窒素(77K)に冷却して使用するために，手間がかかる．
+
+
+\begin{table}
+  \begin{center}
+    \caption{ゲルマニウム検出器の特性．}
+    \begin{tabular}{ll}
+      \hline\hline
+      結晶 & 高純度ゲルマニウム \\
+      検出器モデルナンバー & GMX-15190-$\rho$ \\
+      結晶の直径 & 50．0~mm \\
+      結晶の長さ & 49．6~mm \\
+      中心部の穴の直径  & 9．1~mm \\
+      中心部の穴の深さ  & 41．3~mm \\
+      有感面積 & 94．7~cm$^2$ \\
+      表面不感層 & 0．3~$\mu$m \\
+      入射窓の材質 & Be (ベリリウム) \\
+      入射窓の厚さ & 0.5~mm \\
+      測定可能エネルギー範囲 & 2．0~keV$\sim$10~MeV \\
+      分解能 (FWHM at 1．33~MeV， $^{60}$Co) & 1．9~keV \\
+      分解能(FWHM at 5．9~keV， $^{55}$Fe) & 0．74~keV\\
+      \hline\hline
+    \end{tabular}
+    \label{table:ge-detector}
+  \end{center}
+\end{table}
+
+\subsection{実験}
+
+\subsubsection{ゲルマニウム検出器の作動確認手順}
+
+ゲルマニウム検出器を液体窒素で十分冷やすためには，約1日を要する．
+実験当日には，予め前日に液体窒素を入れた状態にしておく．
+この状態で，高電圧を3000V印加する．
+操作手順を間違いないようにする．
+高電圧が正常に印加されたら，データ収集を始める．
+まずは環境放射線を測定する．
+横軸のスケールは，適当な較正結果を用いてエネルギーに変換する．
+データ収集を始めると，スペクトルが発展していくことを確認する．
+
+次に，$^{60}$Co，$^{137}$Cs，$^{22}$Na線源をそれぞれ傍に置き，
+スペクトルを測定する．
+線源の取り扱いには十分気を付けること．なくしたり，破損しないように，
+注意深く丁寧に扱うこと．
+
+次に，放射線測定キットの試料を用いて，そこから発するガンマ線のスペクトルを
+測定する．
+
+\subsubsection{課題}
+
+{\bf 課題 D2-1-1}~Ge検出器の動作原理を説明しなさい．
+
+{\bf 課題 D2-1-2}~環境放射線のエネルギースペクトルを観測し，
+その起源を文献などから調べること．
+$^{40}$Kはどのピークに相当するか，探すこと．
+
+{\bf 課題 D2-1-3}~$^{60}$Co，$^{137}$Cs，$^{22}$Naのそれぞれの線源の
+ガンマ線の信号を見つけること．
+それぞれスペクトルから何MeVのガンマ線が発生しているのか決定すること．
+線源を近づけたり遠ざけたりすることにより，観測されるガンマ線の強度は
+距離のどのような関数として表されるか調べること．
+
+{\bf 課題 D2-1-4}~放射線測定キットからのガンマ線スペクトルを観測し，
+その試料にはどのような放射線源が含まれているのかを特定すること．
+ガンマ線のエネルギーと核種の対応関係のリストは実験室に置いておく．
+
+\newpage
+%%%%%%%%%%
+%
+% Section 3
+%
+%%%%%%%%%%
+
+\section{パラボラアンテナによる電磁波の計測}
+\subsection{はじめに}
+我々の身の回りは様々な電磁波で満ち溢れている．電磁波はその周波数によって性質が異なり，様々な分野で利用されている．電磁波の利用分野をスペクトル別に示した図を図\ref{fig:spectrum}として載せる．
+
+一般に波長が長い電磁波のことを電波と呼ぶ．電波は進行方向に物体があっても回折によって後方へ回り込むため遠方まで届くという性質がある．その性質を利用して工業的には通信に用いられており，TVやラジオ，Wi-Fiなどには波長がcm$\sim$\si{\micro m}程度(周波数はMHz$\sim$GHz程度)の電磁波を利用している．また，自然界においては観測可能な宇宙の最外縁から飛来する宇宙マイクロ波背景放射(CMB)と呼ばれる電磁波が約3mm程度の波長を持っていることが知られている．
+
+波長がnmオーダーになってくると，電磁波は可視光となり，我々の目に見えるようになる．よく知られるように波長が長い光は赤色にみえ，短くなるにつれて青色になっていく．さらに波長が短くなると紫外線となり目には見えなくなるが，紫外線を浴びると日焼けをする．これは電磁波のエネルギーが周波数に依存し，単位時間あたりに皮膚が受けるエネルギーが増えることが原因である．これより高エネルギーの電磁波は，$X$線や$\gamma$線と呼ばれ，周波数(波長)で表すには大きすぎる(短すぎる)ので，代わりに単一光子のエネルギーとしてeVの単位を用いる．高エネルギーの電磁波は正しく用いることで医療等に応用できる一方，放射線の基礎的事項でも学んだように人体に有害な影響を及ぼすこともある．ゲルマニウム半導体検出器実験では放射線源からの高エネルギー電磁波を取り扱った．本実験で扱う電磁波はこれよりもっと周波数が低いマイクロ波・ミリ波・センチ波と呼ばれる帯域のものである．
+
+このミリ波帯域は，直進性や透過性に優れ，車載レーダーや通信機器などで工業的にも研究が盛んであり，宇宙から飛来するCMBもこの帯域に存在するため電波天文学的にも非常に注目されている帯域である．CMBは宇宙全天から等方的に飛来しているが，通信目的で人工的に電磁波を放射する際は，電磁波に指向性を持たせてビームにすることで伝送効率を向上させる．我々が普段見ているテレビの電波を発信する人工衛星も同様に，日本へGHz帯域の電磁波のビームを照射している．このビームを受信用パラボラアンテナを用いて検出することでミリ波の基本的性質及びその検出方法を学ぶ．
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=70mm]{picture/spectrum.jpg}
+    \caption{電磁波のスペクトル\cite{pic5}}
+    \label{fig:spectrum}
+  \end{center}
+\end{figure}
+
+\subsection{実験目的}
+BS・CSアンテナを用いた周波数12GHzの電磁波の強度測定を行い，スカイマップを作成する．得られたデータを解析し，人工衛星の位置の算出及びBS・CSアンテナの性能評価を行う．また，Pythonによる簡単なデータ解析方法を習得する．
+
+\subsection{Maxwell方程式と波動方程式}
+真空中を伝播する電磁波について考える．自由空間のMaxwell方程式は次で与えられる．
+\begin{align}
+  \dive \vE = 0\\
+  \dive \vB = 0\\
+  \rot\vE+\frac{\del\vB}{\del t}=0\label{eq:1}\\
+  \rot\vB-\mu_0\varepsilon_0\frac{\del \vE}{\del t}=0\label{eq:2}
+\end{align}
+$\vE，\vB$は電場と磁束密度，$\mu_0，\varepsilon_0$は真空の透磁率と誘電率である．
+まず，(\ref{eq:1})の両辺の$\rot$をとる．
+\begin{align}
+  \rot\rot\vE+\frac{\del}{\del t}(\rot\vB)=0
+\end{align}
+ここで，第1項にベクトル解析の公式
+\begin{align}
+  \rot\rot\boldsymbol{A}=\grad\dive\boldsymbol{A}-\Delta\boldsymbol{A}\label{eq:rotrotA}
+\end{align}
+を用いると
+\begin{align}
+  \grad\dive\vE-\Delta\vE+\frac{\del}{\del t}(\rot\vB)=0
+\end{align}
+となる($\Delta$はラプラシアン)．この式の第1項はMaxwell方程式より0となる．また，第3項に(\ref{eq:2})を代入すると
+\begin{align}
+  -\Delta\vE+\frac{\del}{\del t}\left(\mu_0\varepsilon_0\frac{\del \vE}{\del t}\right)=0
+\end{align}
+となる．これを整理すると
+\begin{align}
+  \left(\Delta-\mu_0\varepsilon_0\frac{\del^2}{\del t^2}\right)\vE=0
+\end{align}
+という波動方程式を得ることができ，Maxwell方程式から電磁波の存在を確かめることができた．ここで，波動方程式の$\mu_0\varepsilon_0$の部分は波動の群速度の2乗分の1を表している．よって，電磁波の速度は$\frac{1}{\sqrt{\mu_0\varepsilon_0}}$となる．この値は光速度$c$の測定値と一致し
+\begin{align}
+  c=\frac{1}{\sqrt{\mu_0\varepsilon_0}}
+\end{align}
+という関係になっており，光の正体が電磁波であることを示している．
+
+\subsection{電磁波のエネルギー}
+Maxwell方程式から電磁波のエネルギーがどのような表式をとるか確認する．Maxwell方程式は電流密度$\vi$を導入して
+\begin{align}
+  \rot\vH-\frac{\del \vD}{\del t}=\vi\label{eq:3}\\
+  \rot\vE+\frac{\del \vB}{\del t}=0\label{eq:4}
+\end{align}
+から出発することにする．まず，(\ref{eq:3})の両辺に$\vE$を内積させ，(\ref{eq:4})の両辺には$\vB$を内積させる．
+そうしてできた2つの式の辺々を引き算すると
+\begin{align}
+  \vE\cdot\rot\vH-\vE\cdot\frac{\del \vD}{\del t}-\vH\cdot\rot\vE-\vH\cdot\frac{\del \vB}{\del t}=\vE\cdot\vi
+\end{align}
+を得る．ここでベクトル解析の公式より
+\begin{align}
+  \dive(\vE\times\vH)=\vH\cdot\rot\vE-\vE\cdot\rot\vH\label{eq:divEH}
+\end{align}
+となることを用いれば
+\begin{align}
+  -\vE\cdot\frac{\del\vD}{\del t}-\vH\cdot\frac{\del\vB}{\del t}&=\vE\cdot\vi+\dive(\vE\times\vH)\nonumber\\
+  -\vE\cdot\varepsilon_0\frac{\del\vE}{\del t}-\vH\cdot\mu_0\frac{\del \vH}{\del t}&=\vE\cdot\vi+\dive(\vE\times\vH)\nonumber\\
+  \frac{\del}{\del t}\left(\frac{1}{2}\varepsilon_0\vE^2+\frac{1}{2}\mu_0\vH^2\right) &=\vE\cdot\vi+\dive(\vE\times\vH)
+\end{align}
+と書くことができる．この式の左辺括弧内の第1項は静電場のエネルギー密度となっており，第2項は静磁場のエネルギー密度を表している．よって，この式の両辺に微小体積$dV$を掛けて体積積分を行うと，左辺の括弧内を全エネルギー$U$に書き換えて次のように書ける．
+\begin{align}
+  -\frac{\del U}{\del t}&=\int_V (\vE\cdot\vi)dV+\int_V \dive(\vE\times\vH)dV\nonumber\\
+  &=\int_V (\vE\cdot\vi)dV+\int_S (\vE\times\vH)\cdot\vn dS
+\end{align}
+この式は，ある体積空間内から出ていく全エネルギー$U$の減少量を表していることになる．右辺第1項の$\vE\cdot\vi dV$という項は「$\mbox{電場}\times\mbox{距離}=\mbox{電圧}$」という関係を思い出すと，「$\mbox{電場}\times\mbox{電流}\times\mbox{体積}=\mbox{電力}$」となることがわかる．すなわち，これはジュール熱に相当するものであり，積分した範囲内に存在した電荷が電場により加速され運動エネルギーを得て，電磁場のエネルギーを受け取ったことになる．つまり，電磁場のエネルギーは時間経過とともに熱エネルギーへ変わっていく．
+
+一方，右辺第2項の$\vE\times\vH$はポインティングベクトル(Poynting vector)と呼ばれる量である(Pointingではなく発見者であるPoynting氏の人名由来の単語であることに注意)．$\vs\equiv\vE\times\vH$としてよく表され，$\vs$の向きは電磁波の進行方向と一致する．また，式変形の途中でガウスの法則を適応したが，$\vn$は積分した領域の表面における法線ベクトルである．これとポインティングベクトルとの内積をとったものを領域$V$の表面$S$上で面積分した量(外へ出ていくポインティングベクトルの合計値)が電磁場のエネルギーの減少量と等しいことになる．このような関係からポインティングベクトルはよく「単位面積当たりの電磁波が単位時間に持ち運ぶエネルギーを表している」等と表現される．
+
+
+
+\subsection{実験装置}
+観測対象の静止衛星は12GHzの電磁波を発信している．これを検出するために以下の図\ref{fig:NHK_wire}ような装置を作成する．以下に各装置の説明を記す．
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=150mm,page=1]{picture/NHK_wire.pdf}
+    \caption{実験装置の概略図}
+    \label{fig:NHK_wire}
+  \end{center}
+\end{figure}
+
+\subsubsection{Parabolic antenna (BS・CS antenna)}
+2次曲線である放物線は，頂点の接線に対して垂直に入射してくる光線(平行波)を焦点に集めるという性質を持っている，この性質を利用したのがパラボラアンテナ(Palabolic antenna)である．パラボラアンテナにも様々な種類があり，放物線の軸を反射器の内部にもつOn-axis parabolic antennaと外部にもつOff-axis parabolic antennaなどがあり用途によって使い分ける．電磁波を検出するときは平行波を焦点へ集光するが，逆に放射するときは焦点に球面波を発生させる光源を設置すれば良い．図\ref{fig:parabolic}としてOn-axis parabolic antennaとOff-axis parabolic antennaの放射・集光原理を示す．
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=140mm]{picture/parabolic_antenna.pdf}
+    \caption{On-axis parabolic antenna(左図)とOff-axis parabolic antenna(右図)\cite{pic1}}
+    \label{fig:parabolic}
+  \end{center}
+\end{figure}
+
+\subsubsection{Local Oscillator}
+周波数変換を行うために信号を発生させる装置で，日本語では\textbf{局部発振器}と呼ばれる．本実験では11GHzの信号を生成する．詳しくは，ヘテロダインのセクションに記す．
+
+\subsubsection{Mixer}
+混合器とも呼ばれる．信号と信号を乗算することができる素子である．様々な種類があるが今回はダイオードの非線形性を利用したものを使用する．仕組みはヘテロダインのセクションに示す．
+
+\subsubsection{LPF}
+Low Pass Fillterの略で内部はコンデンサーとコイルで構成されている．カットオフ周波数以上の周波数を持つ信号をカットする．
+
+\subsubsection{AMP}
+Amplifierの略記．日本語ではアンプや増幅器と呼ばれる．BS・CSアンテナから送られてくる信号は弱すぎるため，AMPで増幅してから検出を行う．
+
+\subsubsection{Diode}
+\textbf{整流作用}(電流を１方向にしか通さない作用)をもつ電子素子．また，Diode(ダイオード)には入力する電圧の振幅が小さかった場合，入力電圧の大きさの二乗に比例した電圧を出力するという特性がある．この性質を用いた高周波検出方法に2乗検波というものがある．これについては後のセクションに記載する．
+
+\subsubsection{ADC}
+Analog to Digital Converterの略記．Diodeから送られてくる信号はアナログ信号であるから，PCで読み取るためにはADCを用いてデジタル電気信号に変換する必要がある．また，電圧，電流，温度などの電気的・物理的現象のデータを収集・計測する装置・システムのことを一般にDAQ(Data AcQuisition)と呼ぶためこちらの名称を使用する場合もある．今回使用するDAQ(ADC)はNational Instruments社の製品で，NI製のDAQはDAQExpressというNI製ソフトウェアにて高度なデータ収集・解析が行えるため，ノイズ解析などを行う場合はこのソフトで簡単にフーリエ解析が行える．
+
+\subsubsection{Python}
+近年急速に普及してきたインタープリター型プログラミング言語．C言語のように変数の型を明示する必要がなく，１行ずつ実行していくことが可能なため，プログラミング初学者にも非常に扱いやすい．C言語などに比べて実行速度が遅いことが難点ではあるが，numpyやscipyなどの科学計算用ライブラリを用いることで十分実用に耐える速度を実現できる．また，PythonはLabVIEWのような機器制御も可能とする．PyVISAと呼ばれる機器通信用ライブラリをインポートすることでGPIB， シリアル， USB，イーサネットなどさまざまな計測器バスと通信ができ，NI-VISAに対応した機器であれば非常に簡単にPythonでの制御が可能となる．ここで，NI-VISAとはLabVIEWを開発したNational Instruments社が設計したI/O規格のことである．
+
+\subsection{実験原理}
+\subsubsection{ヘテロダイン}
+ヘテロダインとは2つの振動波形を掛け合わせることで，新たな周波数の信号を生成することである．信号の変調・復調を行ったり，信号を解析しやすい周波数帯へ移すために行う．BS・CSアンテナから得られる12GHzの信号は周波数が高すぎて直接観測することは非常に難しい．よって，ヘテロダインで検波可能な低周波帯域へ変調する必要がある．ここで，ヘテロダインは次のような三角関数の性質に基づいている．
+\begin{align}
+  \sin\omega t \sin\omega' t = -\frac{\cos(\omega+\omega')t-\cos(\omega-\omega')t}{2} \label{eq:hetero}
+\end{align}
+
+つまり，ヘテロダインを行うためには周波数$\omega$の信号と$\omega'$の信号の乗算(ミキシング)をする必要がある．ミキシングをする際，通常Mixerという素子を用いるが，その内部にダイオードを用いているものを\textbf{ダイオードミキサ}と呼ぶ．
+
+\subsubsection{ダイオードミキサ}
+素子には線形素子と非線形素子と呼ばれるものがあり，線形素子とは入力に対して出力が1次関数的に振る舞うもので，非線形素子はそうならないものである．ダイオードは後者であり，電流と電圧の関係は図\ref{fig:IV_graph}のようになる．
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=70mm]{picture/IV_graph.png}
+    \caption{ダイオードの電流電圧特性曲線\cite{pic3}}
+    \label{fig:IV_graph}
+  \end{center}
+\end{figure}
+図\ref{fig:IV_graph}を見るとわかるように，ダイオードは順方向の電流はよく流すが，逆方向の電流はほとんど流さないことがわかる(整流作用)．この性質を利用してミキシング回路を作ることができる．図\ref{fig:hetero_wire}に回路図と各位置での信号の様子を載せる．
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=170mm,page=3]{picture/NHK_wire.pdf}
+    \caption{ダイオードによるミキシング回路}
+    \label{fig:hetero_wire}
+  \end{center}
+\end{figure}
+
+$y_s$が観測したい信号で，角振動数$\omega$を持つとする．ただし$n$は整数で局部発振器からの信号$y_l$は角振動数を$n-1$倍として設定する．ダイオードを通る前の信号はそれぞれの和(波形：$Y$)になっており，フーリエ変換(F.T.)しても当然$n\omega$と$(n-1)\omega$のところにしかピークは現れない．しかし，ダイオードを通った後は交流電圧においてマイナス値を取っている部分は0Vとなるので，ダイオードの特性関数を$D(V_{oltage})$とすると$D(Y)$のような電圧波形となる．この時のフーリエ変換に注目すると，低周波と高周波帯域に信号が分かれていることがわかる．つまり，ダイオードによってヘテロダインが行われたと言える．
+
+周波数を本実験のパラメータに合わせて観測信号を12GHz，変調信号を11GHzとしてヘテロダインを行った時の電圧を時間と周波数空間で表したグラフを図\ref{fig:hetero}として載せる．
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=170mm,page=2]{picture/NHK_wire.pdf}
+    \caption{ダイオードによるヘテロダイン}
+    \label{fig:hetero}
+  \end{center}
+\end{figure}
+
+\subsubsection{2乗検波}
+ダイオードには入力する電圧の振幅が小さかった場合，入力電圧の大きさの2乗に比例した電圧を出力するという特性がある．
+式で表すと，ダイオードへの入力電圧を$V_{in}$，出力電圧を$V_{out}$とすると$\alpha$を定数として
+\begin{align}
+  V_{out} = \alpha V_{in}^2
+\end{align}
+と書くことができる．また，電磁波の強度として，その大きさは電磁波の電場の大きさの2乗に比例することが知られている．電磁波の強度を$P$，電場を$E$，$\beta$を定数とすると
+\begin{align}
+  P = \beta E^2
+\end{align}
+となる．ここで，電磁波の強度$P$はポインティングベクトル$\vs$を半径$r$の球面上で面積分したものと一致する．今回の装置では，ダイオードへの入力電圧$V_{in}$は測定対象からの電磁波の電場$E$に比例し
+\begin{align}
+  V_{in}=\gamma E
+\end{align}
+の関係となっている．
+上の3つの式から，$P$と$V_{in}$の関係を求めると，$\varepsilon$を定数として
+\begin{align}
+  V_{out}=\varepsilon P
+\end{align}
+となる．ここで，$\varepsilon=\frac{\alpha \gamma^2}{\beta}$である．
+以上から，$V_{out}$と測定対象からの電磁波の強度$P$との間には比例関係が成り立つことがわかる．このことから$V_{out}$の変化を測定することで$P$の変化の様子を知ることができる．
+
+\subsubsection{ガウシアンビーム}
+レーザーや電磁波のビームは通常，ビームの中心が最も強度が高く，端に行くにつれて強度がなだらかに落ちていく形状を持っている．これらはガウシアンでフィットすることができ，数理モデルとしても都合が良いことから\textbf{ガウシアンビーム}と呼ばれる．式で表すと
+\begin{align}
+  I(r) &= I_0 \exp\left( \frac{-2r^2}{w(z)^2}\right)=\frac{2P}{w(z)^2}\exp\left(\frac{-2r^2}{w(z)^2}\right)
+\end{align}
+となり，$I_0$はビーム中心でのピーク放射強度，$r$はビーム半径，$w(z)$は放射強度が$I_0$の$1/e^2$(13.5\%)になる地点のビーム半径，$z$は伝播距離，$P$はビームの全パワーを表す．図\ref{fig:beam_west}としてガウシアンビームの形状を示す．
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=50mm]{picture/beam_west.png}
+    \end{center}
+    \caption{ガウシアンビーム\cite{pic4}}
+    \label{fig:beam_west}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=70mm]{picture/gaussian.png}
+    \end{center}
+    \caption{ガウシアンビームの伝播\cite{pic4}}
+    \label{fig:gausian}
+  \end{minipage}
+\end{figure}
+
+例えばレーザーなどは直進性が高い平行波(コヒーレント)の状態で放射されるが，長距離を伝播させれば広がっていくことが確認できる．この時の広がり角はレーザーの波長と共振器部(キャビティ)の構造で決まり，例えば放射口サイズ$D$，波長$\lambda$のレーザーであれば図\ref{fig:laser}のように伝播と共に広がっていき，その広がり角は
+\begin{align}
+  \theta \sim \frac{\lambda}{D}
+\end{align}
+となることが知られている．
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=100mm,page=4]{picture/NHK_wire.pdf}
+    \caption{レーザー光の広がり}
+    \label{fig:laser}
+  \end{center}
+\end{figure}
+
+\subsubsection{静止衛星}
+静止衛星とは赤道上空の静止軌道を地球の自転周期と同じ周期で公転している人工衛星のことである．そのため，見かけ上，地上からは同じ位置に浮いて見えることになる．時間によらず地上に対して同じ位置に存在するため，容易に放送用のアンテナを向けることができる．
+
+静止軌道は理論上円軌道であるが，それは地球が完全な球体と仮定して計算を行うからであり，実際の地球は楕円体であることから，その重力場は位置によって一定ではない．そのため，静止衛星は地上に落下しないように，常に軌道制御が行われている．
+
+衛星の寿命はその搭載燃料に依存するが，例えばNHKの放送衛星BSAT-3aは13年以上．BSAT-3b，BSAT-3cは15年以上であるとスペックシートには書かれている．静止軌道は赤道上のただ一つの高度にしかないため，便利だからと言って大量に衛星を設置することはできず，世界中の国々で厳しい協定が設けられている．静止衛星は理論上燃料が尽きてもその軌道に止まることになってしまうため，ミッションを全うした衛星は人的に静止軌道から投棄しなければならない．通常は静止軌道よりも上の墓場軌道と呼ばれる軌道へ投入する．いくつかの衛星は大気圏再突入させて燃え尽きさせることで処理をする場合があるが，静止衛星はわざわざ上の軌道へ移動させることで処理する理由は，墓場軌道へ移動させるために必要な速度変化$\Delta V$は11m/sで済むが，再突入させるために必要な$\Delta V$は1,500m/sも必要なためである．それでも墓場軌道へ移動させるために必要なエネルギーは，衛星が3約ヶ月の間静止軌道を維持するために必要なエネルギーと等しい．そのため，静止衛星の廃棄は墓場軌道への投入が最も合理的である．
+
+\subsection{実験方法}
+\begin{enumerate}[1．]
+  \item 装置を立ち上げる．
+  \item アンテナを空に向けて静止衛星を探す．
+  \item 発見できたら，電圧ピークを十分見込めるようにアンテナ角度を変えていきマッピングしていく．この時，Excelの行に方位角，列に仰角を設定して電圧を表に詰めていくと良い．
+  \item データをCSVファイルとしてエクスポートし，Pythonでデータ解析を行う．(スカイマップ作成は課題1-1)
+\end{enumerate}
+
+\subsection{課題}
+\subsubsection{課題1}
+
+\begin{enumerate}[(1)]
+  \item 得られた測定データから，ビーム強度のスカイマップを作成する．
+  \item スカイマップからビーム中心を特定し，ピーク位置での強度を方位角と仰角にわたってそれぞれ抽出し，ビームパターンがどのような分布になるか調べる．予想した分布関数でフィッティングを行う．
+  \item フィッティングにより得られた静止衛星の位置を実位置と比べて考察する．
+  \item この実験で用いたパラボラアンテナのゲイン(利得)を求めよ．
+  ゲインとはdBiという単位で表され，全立体角と指向性アンテナの立体角の比に関して常用対数をとり，それを10倍したものである．
+  ここで，ゲイン$G$は，指向性アンテナの立体角を$\Omega$とすると
+  \begin{align}
+    G = 10\log_{10}\left({\frac{4\pi}{\Omega}}\right)
+  \end{align}
+  のように書くことができる．実験で用いたBS・CSアンテナのゲインはBSで34．2[dBi]，CSで34．5[dBi]である．これらと，測定で得られたゲインを比べて今回行った実験を評価せよ．
+
+\end{enumerate}
+
+\subsubsection{課題2}
+
+\begin{enumerate}[(1)]
+  \item 式(\ref{eq:rotrotA})及び式(\ref{eq:divEH})を示せ．
+  \item 電磁波の電場と磁場の成分は次のように表される．
+  \begin{align}
+    \vE = \ve_1\cdot E_0 e^{i(\vk\cdot\vr-\omega t+\phi)}\nonumber\\
+    \vB = \ve_2\cdot B_0 e^{i(\vk\cdot\vr-\omega t+\phi)}\nonumber
+  \end{align}
+  ここで，$\ve_i=(e_{ix}，e_{iy}，e_{iz})(i=1，2)$であり，電磁波の振動方向を表す単位ベクトルである．また，$\vr=(x，y，z)$であり，$\vk$は波数ベクトル，$\phi$は位相を表す．
+  これらが波動方程式の解であることを確かめよ．
+  \item 電磁波の電場成分と磁場成分が横波であることを証明せよ．また，それらの振動方向が直交することを示し，電磁波の電場成分と磁場成分の大きさの比を求めよ．
+  \item 電磁波における電場のエネルギー密度と磁場のエネルギー密度が等しいことを示せ．
+\end{enumerate}
+
+\subsubsection{課題3}
+\begin{enumerate}[(1)]
+  \item 静止衛星軌道の高度を数値計算せよ．ただし，答えだけでなく導出の過程も記すこと．
+  \item この衛星を無限遠へ投棄する場合に必要な追加速度$\Delta V$はいくらになるか．
+\end{enumerate}
+
+\subsubsection{引用}
+この『パラボラアンテナによる電磁波の計測』の実験は岡山大学博士課程3年(2020年度)の小松国幹さんがフロンティアサイエンティストコースにて執筆した成果報告書『BS・CSアンテナを用いて見る周波数12GHzの世界』に基づいて作成している．
+
+\newpage
+
+\section{アンテナによる電磁波の放射と検出}
+\subsection{はじめに}
+電磁波の放射・検出には様々な種類のアンテナが用いられる．具体的には，先の実験で用いたパラボラアンテナや，四角錐型のホーンアンテナなど電磁波の状況に応じて形状の異なるアンテナを使用する．本実験では種々のアンテナの中から最も単純な形状のダイポールアンテナを作製し，電磁波の放射とその検出方法について理解を深める．また，実際に日常で使われている「八木アンテナ」と呼ばれるアンテナを作成し，実用的に遠くまで電磁波を送る伝送方法がどのような原理に基づいているのかを紐解く．
+
+
+\subsection{実験目的}
+電磁波の放射と検出についてアンテナを自作することで理解を深め，鋭い指向性のあるビームを出せる八木アンテナがどのような仕組みで設計されているかを確認する．
+また，課題をクリアするためにはどのような実験を行うことが必要か考えられる力をつけることも目的とする．
+
+\section{電磁波の放射と実験原理}
+\subsection{ゲージ変換と遅延ポテンシャル}
+例によってMaxwell方程式から出発する．
+\begin{align}
+  \dive \vE(\vr，t) &= \frac{\rho(\vr，t)}{\varepsilon_0}\label{eq:divE}\\
+  \dive \vB(\vr，t) &= 0\\
+  \rot \vE(\vr，t) &= -\frac{\del \vB (\vr，t)}{\del t}\\
+  \rot \vB(\vr，t) &= \mu_0\vi (\vr，t)+\mu_0\varepsilon_0\frac{\del \vE (\vr，t)}{\del t}\label{eq:rotB}
+\end{align}
+ここで，電場$\vE$と磁場$\vB$は
+\begin{align}
+  \vE(\vr，t) &= -\nabla\phi(\vr，t)-\frac{\del \vA(\vr，t)}{\del t}\\
+  \vB(\vr，t) &= \rot\vA(\vr，t)
+\end{align}
+と書ける．これらを(\ref{eq:divE})，(\ref{eq:rotB})に代入するとそれぞれ次のように書き直せる．
+\begin{align}
+  \Delta\phi+\nabla\cdot\frac{\del \vA}{\del t} &= -\frac{\rho}{\varepsilon_0}\label{eq:g0}\\
+  \Delta \vA -\frac{1}{c^2}\frac{\del^2 \vA}{\del t^2}+\mu_0\vi&=\nabla\left(\nabla\cdot\vA+\frac{1}{c^2}\frac{\del \phi}{\del t}\right)\label{eq:g1}
+\end{align}
+ここで，$c=\frac{1}{\sqrt{\mu_0\varepsilon_0}}$とした．また，(\ref{eq:g1})の右辺の括弧内を0とするようなゲージを選択することを考える．すなわち
+\begin{align}
+  \nabla\cdot\vA+\frac{1}{c^2}\frac{\del \phi}{\del t}=0\label{eq:Lorentz}
+\end{align}
+となるゲージを選ぶ．このようなゲージをLorentz guageと呼ぶ．しかし，$\vA$と$\phi$が現時点で常にLorentz guageを満たすことは自明ではないので$\vA$及び$\phi$に次のようなゲージ変換を施すことにする．
+\begin{align}
+  \vA \rightarrow \vA'=\vA+\nabla\chi(\vr，t)\\
+  \phi \rightarrow \phi' = \phi -\frac{\del \chi(\vr，t)}{\del t}
+\end{align}
+これを(\ref{eq:Lorentz})に代入すると
+\begin{align}
+  \nabla\cdot(\vA'-\nabla\chi)+\frac{1}{c^2}\frac{\del}{\del t}\left(\phi'+\frac{\del \chi}{\del t}\right)&=0\nonumber\\
+  \nabla\vA'+\frac{1}{c^2}\frac{\del \phi'}{\del t}-\Delta\chi+\frac{\del^2\chi}{\del t^2} &= 0\label{eq:terms}
+\end{align}
+(\ref{eq:terms})において第3，4項目の$-\Delta\chi+\frac{\del^2\chi}{\del t^2}$において
+\begin{align}
+  -\Delta\chi+\frac{\del^2\chi}{\del t^2}=0
+\end{align}
+となるような$\chi(\vr，t)$を選ぶと，ゲージ変換後の$\vA'，\phi'$は常にLorentz guage条件を満たすことになる．ここで，常にLorentz guage条件を満たすようにして，予めゲージ変換を施しておいた$\vA，\phi$を用いて(\ref{eq:g0})，(\ref{eq:g1})を書き直すと
+\begin{align}
+  \Delta \phi- \frac{1}{c^2}\frac{\del^2 \phi}{\del t^2}&= -\frac{\rho}{\varepsilon_0} \label{eq:phi}\\
+  \Delta\vA-\frac{1}{c^2} \frac{\del^2 \vA}{\del t^2} &= -\mu_0 \vi \label{eq:A}
+\end{align}
+となる．これらを解くと
+\begin{align}
+  \vA(\vr，t) =\frac{\mu_0}{4\pi}\int d^3\vr'\frac{\vi\left(\vr'，t\mp\frac{|\vr-\vr'|}{c}\right)}{|\vr-\vr'|}\label{eq:sol_A}\\
+  \phi(\vr，t)=\frac{1}{4\pi\varepsilon_0}\int d^3\vr'\frac{\rho\left(\vr'，t\mp\frac{|\vr-\vr'|}{c}\right)}{|\vr-\vr'|}
+\end{align}
+ここで，電荷のある位置を$\vr'$として，観測点を$\vr$とした．$\vi，\rho$の符号の取り方には名前がつけられており，$t-\frac{|\vr-\vr'|}{c}$を採用すると遅延ポテンシャルと呼ばれ，$t+\frac{|\vr-\vr'|}{c}$を採用すると先進ポテンシャルと呼ばれる．遅延ポテンシャルは時刻$t'(<t)$の位置$\vr'$の電荷・電流の時間変動が，位置$\vr$に$t$より$\frac{|\vr-\vr'|}{c}$遅れている時刻$t-\frac{|\vr-\vr'|}{c}$にポテンシャルをつくり，電磁場の伝播速度が有限値(光速)であることを示す．一方，先進ポテンシャルは未来の位置と時刻を決めた時，現在はどうあるべきであるかを記述する．
+
+\subsubsection{多重極放射}
+遅延ポテンシャルが$|\vr'|\ll|\vr|$の遠方でどのように振る舞うかを調べるために，静電ポテンシャル$\phi$を展開することを考える．
+\begin{align}
+  \phi(\vr，t)&=\frac{1}{4\pi\varepsilon_0}\int d^3 \vr'\frac{\rho(\vr'，t')}{|\vr-\vr'|}\nonumber\\
+  &=\frac{1}{4\pi\varepsilon_0}\int d^3 \vr'\int dt'\delta\left(t-t'-\frac{|\vr-\vr'|}{c}\right)\frac{\rho(\vr'，t')}{|\vr-\vr'|}
+\end{align}
+ここで公式
+\begin{align}
+  \delta\left(t-t'-\frac{|\vr-\vr'|}{c}\right)=\frac{1}{2\pi}\int d\omega e^{-i\omega(t-t'-\frac{|\vr-\vr'|}{c})}\\
+  \frac{e^{ik|\vr-\vr'|}}{|\vr-\vr'|}=ik\sum_{l=0}^\infty (2l+1)J_l(k|\vr'|)\mathcal{H}_l^{(1)}(k|\vr|)P_l(\cos\theta)
+\end{align}
+を用いる．ただし，${\mathcal{H}_l}^{(1)}(x)=J_l (x)+iY_l(x)$であり，$J_l(x)，Y_l(x)$はそれぞれ第1種Bessel関数，第２種Bessel関数，$P_l(\cos\theta)$はLegendre多項式である．
+よって展開後の遅延ポテンシャルは$\phi$と$\vA$でそれぞれ
+\begin{align}
+  \phi(\vr，t)&=\frac{1}{4\pi\varepsilon_0}\sum_{l=0}^\infty \int dt'\frac{2l+1}{2\pi}\int d\omega e^{-i\omega(t-t')}\cdot\frac{i\omega}{c} \cdot {\mathcal{H}_l}^{(1)} (\frac{\omega r}{c}) \int d^3\vr'J_l(\frac{\omega r'}{c})P_l(\cos\theta')\rho(\vr'，t')\\
+  A(\vr，t)&=\frac{\mu_0}{4\pi}\sum_{l=0}^\infty \int dt'\frac{2l+1}{2\pi}\int d\omega e^{-i\omega(t-t')}\cdot\frac{i\omega}{c} \cdot {\mathcal{H}_l}^{(1)} (\frac{\omega r}{c}) \int d^3\vr'J_l(\frac{\omega r'}{c})P_l(\cos\theta')\vi(\vr，t')
+\end{align}
+となる．ここで，$\rho(\vr，t)$の分布している領域$V$が半径$a$の球面の中に限られていて，電荷分布の振動の周期$T=\frac{2\pi}{\omega}$において$cT\gg a$が成り立っているとする．この条件は，放射電磁波の波長が電流及び電荷分布の存在する領域の大きさに比べてずっと大きいということを意味する．この時，$J_l(\frac{\omega r'}{c})$と${\mathcal{H}}^{(1)}(\frac{\omega r}{c})$の$r'\rightarrow 0$での振る舞いは
+\begin{align}
+  J_l(\frac{\omega r'}{c}) &\rightarrow (\frac{\omega}{c})^l \frac{{r'}^l}{(2l+1)!!}\left[1-\frac{1}{2(2l+3)}(\frac{\omega}{c})^2 {r'}^2+ \cdot\cdot\cdot\right]~~(r'\rightarrow 0) \\
+  \frac{i\omega}{c}{\mathcal{H}}^{(1)}(\frac{\omega r}{c}) &=\frac{i\omega}{c} (\frac{c}{\omega})^l (-r)^l \left(\frac{1}{r}\frac{d}{dr}\right)^l \left( \frac{e^{i\omega r/c}}{i\omega r/c}\right)
+\end{align}
+となる．$J_l(\frac{\omega r'}{c})$については第1項のみ用いて
+\begin{align}
+  \langle\rho^{(l)}(t')\rangle \equiv \int r'P_l(\cos\theta')\rho(\vr'，t')d^3\vr'\\
+  \langle\vi^{(l)}(t')\rangle \equiv \int r'P_l(\cos\theta')\vi(\vr'，t')d^3\vr'
+\end{align}
+を定義すると次式を得る．
+\begin{align}
+  \phi(\vr，t)&=\sum_{l=0}^\infty\phi_l(\vr，t)=\frac{1}{4\pi\varepsilon_0}\sum_{l=0}^\infty\frac{2l+1}{(2l+1)!!}(-r)^l\left(\frac{1}{r}\frac{d}{dr}\right)^l \left(\frac{1}{r}\left\langle\rho^{(l)}(t-\frac{r}{c})\right\rangle\right)\label{eq:phi_pot}\\
+  \vA(\vr，t)&=\sum_{l=0}^\infty \vA_l(\vr，t)=\frac{\mu_0}{4\pi}\sum_{l=1}^\infty\frac{2l-1}{(2l-1)!!}(-r)^{l-1}\left(\frac{1}{r}\frac{d}{dr}\right)^{l-1}\left(\frac{1}{r}\left\langle\vi^{(l-1)}(t-\frac{r}{c})\right\rangle\right)\label{eq:A_pot}
+\end{align}
+ここで$(2l+1)!!=(2l+1)\cdot(2l-1)\cdot(2l-3)\cdot\cdot\cdot 5\cdot 3\cdot 1$である．
+
+\subsubsection{双極子放射}
+(\ref{eq:phi_pot})，(\ref{eq:A_pot})について$l=1$の場合を考える．このような状況を双極子放射という．\\双極子モーメント$\vp (t)=\int \vr'\rho(\vr'，t)d^3\vr'$で定義すると
+\begin{align}
+  \phi_1(\vr，t)&= \frac{1}{4\pi\varepsilon_0} \frac{\vr\cdot\vp (t-\frac{r}{c})}{r^3}+\frac{1}{4\pi\varepsilon_0} \frac{\vr\cdot\dot{\vp} (t-\frac{r}{c})}{cr^2}\\
+  \vA_1(\vr，t)&=\frac{\mu_0}{4\pi}\frac{\dot{\vp} (t-\frac{r}{c})}{r}
+\end{align}
+のように書くことができる．これから電場は
+\begin{dmath}
+  \vE=-\grad{\phi_1}-\frac{\del \vA_1}{\del t}\\
+  =\frac{1}{4\pi\varepsilon_0}\left[\frac{-\vp (t-\frac{r}{c})}{r^3}+\frac{3\vr\left(\vr\cdot\vp (t-\frac{r}{c})\right)}{r^5}\right]+\frac{1}{4\pi\varepsilon_0}\left[-\frac{\dot{\vp} (t-\frac{r}{c})}{cr^2}+\frac{3\vr\left(\vr\cdot\dot{\vp} (t-\frac{r}{c})   \right)}{cr^4}  \right]+\frac{1}{4\pi\varepsilon_0}\left[-\frac{\ddot{\vp} (t-\frac{r}{c}) }{c^2r}+\frac{\vr\left(\vr\cdot\ddot{\vp} (t-\frac{r}{c})\right)}{c^2 r^3}\right]
+\end{dmath}
+となり，磁束密度は
+\begin{align}
+  \vB&=\rot{\vA_1 (\vr，t)}\nonumber\\
+  &=-\frac{\mu_0}{4\pi}\frac{\vr\times\dot{\vp}(t-\frac{r}{c})}{r^3}-\frac{\mu_0}{4\pi}\frac{\vr\times\ddot{\vp}(t-\frac{r}{c})}{cr^2}
+\end{align}
+となる．遠方まで伝わる項は次数が低い項であるから$r^{-1}$の項のみ考えると
+\begin{align}
+  \vE_{LD}&=\frac{1}{4\pi\varepsilon_0}\left[-\frac{\ddot{\vp}(t-\frac{r}{c})}{c^2 r}+\frac{\vr\left(\vr\cdot\ddot{\vp}(t-\frac{r}{c}) \right)}{c^2 r^3}\right]\nonumber\\
+  &=\frac{1}{4\pi\varepsilon_0 c^2}\frac{\vr\times\left(\vr\times\ddot{\vp}(t-\frac{r}{c})\right)}{r^3}\nonumber\\
+  &=-c\left(\frac{\vr}{r}\right)\times\vB_{LD}\\
+  \vB_{LD}&=-\frac{\mu_0}{4\pi}\frac{\vr\times\left(\vr\times\ddot{\vp}(t-\frac{r}{c})\right)}{cr^2}
+\end{align}
+これより，双極子放射のポインティングベクトルの時間平均$\overline{\vs}(\vr，t)$は
+\begin{align}
+  \overline{\vs}(\vr，t)&=\frac{1}{2\mu_0}\vE_{ED}\times{{\vB}^*}_{LD}\nonumber\\
+  &=\frac{\mu_0}{32\pi^2 c}\frac{|\vr\times\ddot{\vp}(t-\frac{r}{c})|^2}{r^4}\ve_{\vr}
+\end{align}
+と求められる．より具体的に計算するために$\vp=p\ve_z$とすると$|\vr\times\ve_z|=r\sin\theta$より
+\begin{align}
+  \overline{\vs}(\vr，t)&=\frac{\mu_0}{32\pi^2 c}\frac{|\ddot{p}(t-\frac{r}{c})|^2}{r^2} \sin^2\theta\ve_{\vr}
+\end{align}
+となる．これを図示すると図\ref{fig:dipole_wave}のような分布を描く．全放射エネルギー$P(t)$はこれを半径$r$の球面上で積分することにより
+\begin{align}
+  P(t)&=\int \overline{\vs}(\vr，t) \cdot \frac{\vr}{r} d \Omega\nonumber\\
+  &=\frac{\mu_0|\ddot{p}(t-\frac{r}{c})|^2}{32\pi^2c} 2\pi \int_{0}^{\pi} \sin^2\theta \sin\theta d\theta\nonumber\\
+  &=\frac{\mu_0|\ddot{p}(t-\frac{r}{c})|^2}{12\pi c}
+\end{align}
+となる．
+
+双極子放射を利用したものとしてダイポールアンテナと呼ばれるものがある．これは最も単純な線状アンテナであり簡単に作成できる．図\ref{fig:dipole}のような構造になっており，その放射パターンは図\ref{fig:dipole_wave}のような形状となる．
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=70mm]{picture/dipole_wave.png}
+    \end{center}
+    \caption{双極子放射のポインティングベクトルが作る分布}
+    \label{fig:dipole_wave}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=80mm]{picture/dipole.pdf}
+    \end{center}
+    \caption{ダイポールアンテナ}
+    \label{fig:dipole}
+  \end{minipage}
+\end{figure}
+
+\subsubsection{八木アンテナ}
+テレビ受信用アンテナなどは比較的高い指向性と利得(ゲイン)が必要となる．八木アンテナは八木秀次博士と宇田新太郎博士により発明されたもので給電されている放射器，無給電の導波器及び反射器で構成されている．本実験では放射器にダイポールアンテナを用い，導波器と反射器にアルミ線を用いる．八木アンテナの構造と写真は図\ref{fig:yagi_str}，\ref{fig:yagi_pic}に示す．
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=110mm,page=2]{picture/yagi_str.pdf}
+    \end{center}
+    \caption{八木アンテナの構造}
+    \label{fig:yagi_str}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=30mm]{picture/yagi_pic.jpg}
+    \end{center}
+    \caption{八木アンテナの写真\cite{pic2}}
+    \label{fig:yagi_pic}
+  \end{minipage}
+\end{figure}
+
+\subsubsection{サイドローブ}
+どんなに指向性の高いアンテナであっても，本来放射したいメインビームとは別の角度方向に漏れ出るビームが存在する．この別の角度に漏れ出てしまうビームのことをサイドローブと呼ぶ(図\ref{fig:sidelobe})．
+放射する側のアンテナではサイドローブ方向へ電磁波が放射されることとなり，逆に検出する側のアンテナではサイドローブ方向に感度を持つことになる．それぞれ電磁波の伝送や検出に問題を引き起こすが，特に電波天文学的にはこのサイドローブは非常に問題となる．
+また，小孔やスリットによる回折波のパターンをサイドローブと呼ぶこともあるため(図\ref{fig:lobe_apt})混同に注意すること．
+
+\subsubsection{ネットワークアナライザ}
+高周波回路の周波数応答特性を測定することができる．PORT1(送信用)とPORT2(受信用)の端子をもち，PORT1から設定した周波数帯の高周波を周波数スイープしながら送信する．この高周波が回路網を通り，その先にPORT2を接続することでPORT1で送信した信号とPORT2で検出した信号の電力比を計測し，それらから回路の通過・反射電力の周波数特性を測定することができる，今回は回路ではなくアンテナを接続することで，アンテナの放射電力と検出電力の比の周波数特性を測定するために用いる．
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=110mm,page=1]{picture/sidelobe.pdf}
+    \end{center}
+    \caption{指向性アンテナのビーム強度分布}
+    \label{fig:sidelobe}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[width=80mm,page=2]{picture/sidelobe.pdf}
+    \end{center}
+    \caption{小孔回折によるサイドローブ}
+    \label{fig:lobe_apt}
+  \end{minipage}
+\end{figure}
+
+\subsection{実験の流れ}
+\begin{enumerate}[1．]
+  \item 半波長ダイポールアンテナを2つ作成する．
+  \item 課題1を達成するためにはどのような実験が必要か考える．
+  \item どのような実験を行ったか実験ノートに記述する．
+  \item 八木アンテナを作成し，同様に行うべき実験を考案し実験ノートにまとめていく．
+\end{enumerate}
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=120mm]{picture/setup.pdf}
+    \caption{実験のセットアップ}
+    \label{fig:setup}
+  \end{center}
+\end{figure}
+
+\subsection{課題とレポート}
+\subsubsection{課題1(Dipole to Dipole)}
+\begin{enumerate}[(1)]
+  \item 1GHz，10GHz，100GHzの電磁波の波長を求めよ．
+  \item 検出された電磁波をFFT(高速フーリエ変換)してそのスペクトルを確認せよ．
+  \item 作製した八木アンテナの周波数特性をネットワークアナライザで測定せよ．
+  \item 電磁波の強度の角度依存性を測定せよ．
+  \item ダイポールアンテナ同士を平行に設置した時と，直交に設置した時とで検出される電磁波はどのようになるか測定せよ．また，その結果について考察せよ．
+\end{enumerate}
+
+\subsubsection{課題2(Dipole to Yagi-antenna)}
+\begin{enumerate}[(1)]
+  \item 八木アンテナで観測される電磁波強度の角度依存性はどのようになるか測定せよ．また，観測されるサイドローブ強度はメインビーム強度の何\%になるか測定から解析して求め，シミュレーションと比較し考察せよ．
+  \item 作成した八木アンテナのゲイン(利得)を求めよ．また，シミュレーションと比較し，八木アンテナがどの程度電磁波を検出できているか，その性能を評価せよ．
+\end{enumerate}
+
+\subsubsection{発展課題}
+今日の電波天文学では，非常に精密な観測が求められており，大気の影響を無くすため多くの科学衛星が宇宙へ打ち上げられている．観測対象のスペクトルは異なるものの，科学衛星はそれぞれの望遠鏡を有している．その構造は単純化すると，電磁波が入ってくる"鏡筒部"，その内部のレンズやミラーなどの"光学素子"，電磁波を検出する"ディテクター"から成る．
+多くの科学衛星の目的はどのような「強度・周波数・偏光」を持った電磁波が，どのような「距離と方向」から飛来しているかを観測することだが，サイドローブは科学衛星が行うこのような精密観測に対して重大な影響を及ぼす(ここでのサイドローブの意味はアンテナによるサイドローブではなく図\ref{fig:lobe_apt}のような回折によるサイドローブであることに注意する)．
+
+遠方からの電磁波はほぼ平行波として鏡筒に進入することになるが，この時鏡筒のエッジに電磁波が接触すると回折波(サイドローブ)が発生する．このサイドローブが測定に対してどのような影響を及ぼすか述べよ．
+
+\subsubsection{『アンテナによる電磁波の放射と検出』のレポートについて}
+\begin{enumerate}
+  \item レポートには各課題の解決にあたり，考案した実験の「目的・方法・結果・考察」を明記すること．また，実験セットアップの写真も添付すること．
+  \item 八木アンテナに関しては設計図とシミュレーターによる理論ビームパターンを添付すること．
+  \item 実験中に記述した実験ノートのコピーを添付すること．
+\end{enumerate}
+
+
+
+\newpage
+%%%%%%%%%%
+%
+% Section 4
+%
+%%%%%%%%%%
+\section{粒子検出}
+\subsection{はじめに}
+
+この実験では素粒子物理学の入門として，宇宙線中の$\mu$粒子を捕らえて，その平均寿命を測定する．素粒子物理学に対する理解を深めるとともに，素粒子物理学実験に用いれらる検出器やエレクトロニクスの取扱い，実験データの処理に習熟することを目的としている．
+
+\subsection{宇宙線$\mu$粒子について}
+宇宙空間から地球に飛来する一次宇宙線の大部分は陽子だが，これが大気中の原子核と反応を起こして，$\pi$中間子，$K$中間子などの二次宇宙線が発生する．これらの粒子は，比較的短時間のうちに，弱い相互作用によって$\mu$粒子，電子，ニュートリノなどの粒子に崩壊する．
+\begin{center}
+  \begin{equation}
+    \pi^+ \to \mu^+ + \nu_\mu， \hspace{2em} K^+ \to \mu^+ + \nu_\mu　
+  \end{equation}
+  %
+  \begin{equation}
+    \pi^- \to \mu^- + \overline{\nu_\mu}， \hspace{2em} K^- \to  \mu^- + \overline{\nu_\mu}
+  \end{equation}
+  %
+  %\begin{equation}
+  %\pi^0 \to \gamma\gamma，  \hspace{2em}   K^\pm \to  \pi^\pm  +  \pi^0
+  %\end{equation}
+\end{center}
+
+$\mu$粒子は質量が105．6MeV/$c^2$（電子の約200倍，陽子の約1/10）の粒子で，弱い相互作用により，
+\begin{center}
+  \begin{equation}
+    \mu^+ \to e^+  +  \overline{\nu_\mu}  +  \nu_e
+  \end{equation}
+  \begin{equation}
+    \mu^-  \to  e^-  +  \nu_\mu  +  \overline{\nu_e}
+  \end{equation}
+\end{center}
+のような三体崩壊をする．電荷を持つ二次宇宙線の成分は，その約70％が$\mu$粒子，残りのほとんどが電子である．
+
+本実験では，この$\mu$粒子を検出し，その寿命を測定するが，
+粒子の寿命に関しては\ref{sec:basic}\ref{sec:decay}節に詳しく説明されているので参照のこと．
+
+
+\subsection{実験1日目}
+
+\subsubsection{検出器と実験手法}
+
+素粒子実験で用いられる検出器として，シンチレーションカウンター，
+主に粒子の位置を検出するためのマルチワイヤープロポーシャルチェンバー，
+ドリフトチェンバー，粒子の速度を知るためのチェレンコフカウンターなどがある．
+$\mu$粒子の寿命を測定するためには，時間的応答の早い測定器を用いることが必要である．
+ここではプラスチックシンチレーションカウンターを用いて，
+宇宙線中の$\mu$粒子ならびにその崩壊で出てきた電子を捕える．
+最初にプラスチックシンチレーションカウンターの動作を調べ，エレクトロニクスの諸パラメーターを調整する．
+
+\subsubsection{エレクトロニクス}
+
+素粒子実験で使用するエレクトロニクス回路のある部分は，
+その機能別に一個又は複数の回路が一つのモジュール（「標準化された回路要素」の意）にまとめられている．
+これらのモジュールをケーブルでつなぎ合わせることにより，全体として一つのシステムを作る．
+このような形態をとることにより，回路の故障が発生した際には故障したモジュールを交換することでシステムを復旧することができる．
+また，モジュール間の結線を変えることで，システムの変換を簡単に行うことができる利点もある．
+これらのモジュールは，それを収納する箱も含めて互換性を持たせるために，一定の基準に従って作られる必要がある．
+NIM，CAMAC，FASTBUSといった規格があり，モジュールや収納箱の寸法，電源電圧などが決められている．\\
+
+・同軸ケーブル\\
+この実験で用いる同軸ケーブルは，特性インピーダンス50Ω，信号の伝播速度20cm/ns(ちなみに光速は30cm/ns)のものである．
+このような伝送線の終端インピーダンスが特性インピーダンスと一致しないと，終端での反射が起こり波形が崩れる．
+ここで特性インピーダンスを$Z_0$，終端インピーダンスを$Z$とすると，反射係数$r$は，
+\begin{equation}
+  r=\frac{Z-Z_0}{Z+Z_0}
+\end{equation}
+となる．従って，$Z=Z_0$のとき$r=0$，$Z=\infty$のとき$r=1$，$Z=1$(ショート)のとき$r=-1$となる．
+
+{\bf 課題 6-1}~~~オシロスコープを用いて，実際に確かめること\\
+
+・ディスクリミネイター(波高弁別器)\\
+入力信号の波高が設定した閾値(threshold)よりも大きいときのみ，規格化された信号を出すモジュール．
+この設定値は変更可能である．このモジュールは負の信号に対して動作するので，入力信号の波高の最大部分をゼロに合わす必要がある．
+また，並列となっている出力の一方のみを使用する場合，他方は50Ωターミネーターをつけること．
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig12.eps}
+    \caption{ディスクリミネイター信号}
+  \end{center}
+\end{figure}
+・ナノセカンドディレイ\\
+このモジュールは，スイッチの切り替えによって入力信号を0~31nsの範囲で遅れせて出力することができる．オシロスコープで実際に観察すること．\\
+
+・コインシデンス\\
+複数の入力部に(ほぼ)同時に信号が入ったときに，規格化された信号を出すモジュール，また，コインシデンスへの入力よりもやや早くアンチ・コインシデンス(否定入力，VETOともいう)への入力があると信号は出力されない．
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig13.eps}
+    \caption{コインシデンス信号}
+  \end{center}
+\end{figure}
+
+・ゲート＆ディレイ\\
+入力信号が入ってから決まった時間だけ遅らせて，決まった幅のパルスを出力するモジュール．この遅延時間とパルス幅はダイヤルで変えられるが，微調整はそれぞれネジで行う必要がある．
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig14.eps}
+    \caption{ディレイ信号}
+  \end{center}
+\end{figure}
+
+
+・スケーラー\\
+ゲートにパルスが入っている間に，入力部に来たパルスの数を数える．
+
+{\bf 課題 6-2}~~~複数のスケーラーを接続し，マスター/スレイブのスイッチの機能や，オーバーフロー信号の出力について調べてみること．\\
+
+・TDC(Time to Digital Converter)\\
+TDCは，入力された2つの信号の時間差を測定するモジュールである．測定した時間をデジタル化した値にして，
+コンピューターに送る役割を果たす．この実験で使用するTDC$2^12$ビットであり，１ビットが5nsであるので，まで測定可能である．\\
+
+\subsubsection{エレクトロニクスのセットアップと調整}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig15.eps}
+    \caption{エレクトロニクスセットアップ}\label{fig:rad-fig15}
+  \end{center}
+\end{figure}
+図\ref{fig:rad-fig15}はこの実験のセットアップを示したものである．S1・S2・S3はシンチレーションカウンター，
+D1・D2・D3ディスクリミネーター，C1・C2はコインシデンスである．
+宇宙線中の$\mu$粒子が，S1を通過し，S2に入射，静止後崩壊するまでの時間を
+TDCで測定することにより，平均寿命を計算する．
+TDCのスタートの信号として，S1とS2を同時に通過しS3を通過しない(論理式表現ではS1・S2・$\bar{S3}$)時の信号を用いる．
+ストップ信号は，S2で$\mu$粒子が崩壊することにより放出された電子による信号を用いる．
+
+{\bf 課題 6-3}~~~ゲートの役割について考えてみること\\
+
+
+・シンチレーションカウンターと高圧電源\\
+シンチレーションカウンターの構造はプラスチックシンチレーター，ライトガイド，光電子増倍管からなっており，
+荷電粒子の検出に用いられる．\\
+- シンチレーターでは荷電粒子の通過によって螢光物質が励起され，脱励起する際に螢光を発する\\
+- ライトガイドはシンチレーターで発生した螢光を光電子増倍管まで導くもので，アクリル樹脂製のものが使用されている．\\
+- 光電子増倍管は，光電面に当たった螢光により光電効果で電子を発生し，これを$~10^6$倍に増幅して電気信号として出力する．\\
+
+{\bf 高圧電源の扱い方}\\
+高圧電源については，\\
+1．まず全てのダイヤル値が最小になっているのを確認した後，\\
+2．電源を入れ，\\
+3．status swichをstand byからH．V．に切り替え，\\
+4．ダイヤルで徐々に電圧を上げていく，光電子増倍管の最大電圧に気をつけよ．\\
+高圧電源を下す時の手順はこの逆になる．\\
+\\
+・ライトリークテストと電圧設定\\
+シンチレーションカウンターは，シンチレーター内で発生した螢光以外の外部からの光の侵入を防ぐために，
+シンチレーター部及びライトガイド部にはアルミホイルを巻いた後，特殊な黒い紙と黒テープで覆って遮光してある．
+しかし長時間の使用の間にテープがはがれるなどして，ライトリーク(光漏れ)が起こることがある．
+従って，まず全てのカウンターについて出力信号をオシロスコープで観察し，ライトリークが見つかった場合は黒テープで補修する．
+また，ディスクリミネイターカーブの測定が正しく行われるためには，
+荷電粒子の通過による出力信号の波高がディスクリミネイターの出せる閾値の上限を大きく越えない必要性がある．
+このため，上の条件が満たされるよう高圧電源を調整し，各シンチレーションカウンターへの高電圧の設定値を操作する．\\
+
+・ディスクリミネイターカーブの測定\\
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig16.eps}
+    \caption{測定セットアップ}\label{fig:rad-fig16}
+  \end{center}
+\end{figure}
+シンチレーションカウンターからの出力は，比較的波高の低い(雑音)と，十分な波高のある信号が含まれている．
+ディスクリミネイターは，信号とノイズをその波高で分離することができる．
+宇宙線を用いて，この閾値を決めるためのデータをとる．
+まず図\ref{fig:rad-fig16}のように回路を組み，基準となるカウンターに接続したディスクリミネイターの閾値を色々に変化させ
+(例えば，最低値から徐々に上げていく)，そのときの2つのスケーラーの値の比$N_j/N_i$を$D_j$の閾値の関数としてプロットする．
+基準となるカウンターでは，ディスクリミネイターの閾値が最低値になっており，ノイズに対しても宇宙線の通過による信号に対しても，
+$D_j$からの出力がある．調べている方のカウンターの閾値が十分に低い場合，
+このディスクリミネイターからもノイズと宇宙線の両方の信号があるため，
+ノイズ同士の偶発的同時出力により，$N_j/N_i$は大きな値になる．
+閾値が大きくなると，$D_j$は波高の低いノイズに対する出力はなくなるが，宇宙線による信号の出力はあるため，
+$N_j/N_i$は$D_j$の閾値によらずほぼ一定となる．さらに閾値が大きくなると，
+波高の高い宇宙線による信号に対しても$D_j$からの出力が少なくなり，$N_j/N_i$は減少していく．\\
+プロットした結果，グラフには閾値にあまり依存しないプラトー(平坦)な部分が現れる(図\ref{fig:rad-fig17})．
+効率的に宇宙線による信号を検出するため，各ディスクリミネイターの閾値はプラトーの中央付近に設定する必要がある．
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig17.eps}
+    \caption{ディスクリミネータカーブ}\label{fig:rad-fig17}
+  \end{center}
+\end{figure}
+
+・タイミングカーブの測定\\
+前節で少し説明したが，$\mu$粒子の崩壊は，$S_1$と$S_2$が同時に信号を出し，
+$S_3$はこれと同時には信号を出さないという形でとらえられる．
+従って，$S_1$から$S_3$までを貫通した宇宙線に対する信号は，最初のコインシデンスに同時に到達する必要がある．
+このためナノセカンドディレイを用いてシンチレーションカウンターからの信号の同時性が出るように調整する．\\
+この必要な調整値を求めるためのセットアップは上図であるが，
+ディスクリミネイターのあとにそれぞれナノセカンドディレイ(d)を接続する以外は前節の測定と同じである．
+ここでは，ディスクリミネイターの閾値はそれぞれ(3)の測定で求まった値に設定しておく．
+カウンターに接続したナノセカンドディレイの値を変化させ，ぞのディレイの値の時間差を横軸に，
+2つのスケーラーの値の比$N_j/N_i$を縦軸にとってプロットする．
+このグラフで，$N_j/N_i$がディレイの時間差にあまり依らないプラトーになる部分の中心値において
+$S_i$と$S_j$からの同時性が出ているので，
+この値とディレイの時間差のゼロ点との差より，ナノセカンドディレイで補正すべき値が求まる．
+$S_i$と$S_j$の組み合わせは$i$と$j$の交換で同じにならないようにして，3通りの測定を行う．
+なお，VETO IN を用いたアンチ・コインシデンスは信号が出にくいため，
+重なり幅を稼ぐためにディスクリミネイターからの出力幅をやや広く設定しておく．
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm] {rad-fig18.eps}
+    \caption{タイミングカーブ}\label{fig:rad-fig18}
+  \end{center}
+\end{figure}
+
+{\bf 課題 6-4}~~~全ての設定が完了したら，観測される$\mu$粒子のレートを測定せよ．
+
+データ取得を開始する．
+
+\subsection{実験2日目}
+
+\subsubsection{データ解析}
+
+一週間分のデータから得られた値をグラフ用紙にプロットする．\\
+{\bf 課題 7-1}~~~得られたデータは，どのような形が期待されるか．\\
+
+エクセルなどのソフトを用いて，データを%式(\ref{eq:decay-low})
+期待される関数でフィットし，寿命を求める．\\
+最後に得られた結果や実験遂行における反省点などを全員で議論する．
+
+\newpage
+
+\appendix
+
+\section{ポアソン分布の導出}\label{appendix-a}
+
+ここでは，ポアソン分布の式の導出を行う．
+
+時間$t$の間に平均して$m$回ある現象が起きたとする．
+$t$を大きな数$N$で分割した短い時間幅
+\begin{equation}
+  dt=\frac{t}{N}
+\end{equation}
+の間に現象が1回起きる確率は
+\begin{equation}
+  m\frac{dt}{t}
+\end{equation}
+で，$dt$内でこの現象が起きない確率は，
+\begin{equation}
+  1-m\frac{dt}{t}
+\end{equation}
+となる．$dt$内でこの現象が2回起きる確率は，
+$dt^2$のオーダーなので，無視することにする．
+全時間$t$の間に$n$回現象が起きるとき，
+特定の時間$dt$に1回づつ，合計$n$個の異なった
+$dt$内に起ったとしてよい．その場合，
+$N-n$個の$dt$にはその現象が起きていない．
+したがって，時間$t$の間に平均$m$回起きる現象が
+実際には$n$個の$dt$で起きる確率は，
+\begin{equation}
+  \left(m\frac{dt}{t}\right)^n\left(1-m\frac{dt}{t}\right)^{N-n}
+\end{equation}
+である．
+どの$n$個の$dt$に現象が起きたかには選び方があり，その組み合わせは，
+\begin{eqnarray}
+  _NC_n&=&\frac{N!}{n!(N-n)!}=\frac{N(N-1)\cdots(N-n+1)}{n!}\nonumber \\
+  &=&\frac{N^n}{n!}\left(1-\frac{1}{N}\right)\cdots
+  \left(1-\frac{n-1}{N}\right)
+\end{eqnarray}
+したがって，$N$個の$dt$のうち$n$個の$dt$で現象がおきる確率
+$P(m，~n)$は，$t=Ndt$より，
+\begin{eqnarray}
+  P(m，~n) &=&
+  _NC_n\left(\frac{m}{N}\right)^n\left(1-\frac{m}{N}\right)^{N-n}\nonumber\\
+  &=&
+  \frac{m^n}{n!}\left(1-\frac mN\right)^{N-n}
+  \left(1-\frac 1N\right)\cdots\left(1-\frac{n-1}{N}\right)
+\end{eqnarray}
+である．$N\to\infty$，$n/N\to 0$の極限をとれば，
+\begin{eqnarray}
+  \lim_{N\to\infty}\left(1-\frac{m}{N}\right)^{N-n}
+  &=& \lim_{N\to\infty}\left(1-\frac{m}{N}\right)^{-N/m\cdot(-m)}
+  \left(1-\frac{m}{N}\right)^{-n}\nonumber \\
+  &=& e^{-m}
+\end{eqnarray}
+なので，
+\begin{equation}
+  P(m，~n)=\frac{m^n}{n!}e^{-m}
+\end{equation}
+を得る．
+
+$n$について0から$\infty$まで和をとると，
+\begin{equation}
+  \sum_{n=0}^{\infty}P(m，~n)=e^{-m}\sum_{n=0}^{\infty}\frac{m^n}{n!}
+  =e^{-m}e^m=1
+\end{equation}
+で全確率は1になる．
+
+\newpage
+
+\section{最小二乗法}\label{appendix-b}
+
+実験において，測定値から物理量を求めるときに{\bf 最小二乗法}がよく使われる．
+この実験ではADCの数値の測定値$y$が，ガンマ線のエネルギー$x$に線形に依存するとする：
+\begin{equation}
+  y = f(x)= a x + b
+\end{equation}
+ここで，$a$，$b$が求める値である．
+ガンマ線の測定点が$n$個ありそれを$x_i~(i=1，~\cdots，~n)$，
+それに対応して，測定値とその誤差が$y_i$，$\sigma_i$と
+与えられるものとする．
+測定誤差がGauss分布に従うと仮定すると，
+\begin{equation}
+  \chi^2 = \sum_{i=0}^n\frac{(y_i - f(x_i))^2}{\sigma_i^2}
+\end{equation}
+で定義されている$\chi^2$({\bf カイ二乗})が最小になるような
+$a$と$b$が最適値になる．
+一般的には，$y=f(x)$は複雑な関数となり，数値計算で$\chi^2$の最小値
+を与えるパラメタ─を探すが，$f(x)=ax+b$の場合は容易に計算することが
+できる．$\chi^2$の最小値は，$a$と$b$の偏微分の値が0になるときなので，
+\begin{eqnarray}
+  \frac{\partial \chi^2}{\partial a} &=&
+  -2\sum\frac{(y_i-ax_i-b)x_i}{\sigma_i^2}=0 \\
+  \frac{\partial \chi^2}{\partial b} &=&
+  -2\sum\frac{(y_i-ax_i-b)}{\sigma_i^2}=0
+\end{eqnarray}
+この連立方程式を解けばよい．簡単にするために，次の量を定義する：
+\begin{eqnarray}
+  A = \sum\frac{x_i}{\sigma_i^2} & & B = \sum\frac{1}{\sigma_i^2}
+  \nonumber\\
+  C = \sum\frac{y_i}{\sigma_i^2} & & D = \sum\frac{x_i^2}{\sigma_i^2}
+  \\
+  E = \sum\frac{x_iy_i}{\sigma_i^2} & & F = \sum\frac{y_i^2}{\sigma_i^2}．
+  \nonumber
+\end{eqnarray}
+この量を使用すると，
+\begin{equation}
+  a = \frac{EB-CA}{BD-A^2}，~~~~~~~~~~b=\frac{DC-EA}{BD-A^2}
+\end{equation}
+を得る．
+$a$と$b$の誤差は，導出の仕方は略して結果のみを与える：
+\begin{eqnarray}
+  \sigma_a^2 &=& \frac{B}{BD-A^2} \nonumber \\
+  \sigma_b^2 &=& \frac{D}{BD-A^2}\\
+  \mbox{cov}(a，~b) &=& \frac{-A}{BD-A^2}\nonumber．
+\end{eqnarray}
+cov($a，~b$)は二つのパラメータの相関を表す量である．
+
+
+% \section{目的}
+%目的を記入
+
+% \section{原理}
+%label{sec:theory}
+%原理を記入
+
+% \section{実験装置および測定方法}
+%実験装置および測定方法を記入
+
+% \section{課題}
+%課題を記入
+
+\begin{thebibliography}{99}
+  %参考文献
+  %著者名，タイトル名，出版社，年，（もし必要ならページ）
+  \bibitem{rad1} 加藤貞吉，放射線計測，培風館%，2014年%{}内は参照用
+  \bibitem{rad2} グレン・ノル（木村逸郎・阪井英次訳），放射線計測ハンドブック，日刊工業新聞社%，2014年
+  \bibitem{rad3} 砂川重信， 理論電磁気学 第3版，紀伊國屋書店
+  \bibitem{rad4} 小松国幹． BS・CSアンテナを用いて見る周波数12GHzの世界
+  \bibitem{pic5} https://www.emf-portal.org/ja/cms/page/home/technology/general/electromagnetic-spectrum
+  \bibitem{pic1} https://en.wikipedia.org/wiki/Parabolic\_antenna
+  \bibitem{pic2} https://mizuho-a.com/column/column906797
+  \bibitem{pic3} https://toshiba.semicon-storage.com/jp/semiconductor/knowledge/faq/diode/definitions-of-the-terms-in-the-electrical-characteristics-table.html
+  \bibitem{pic4} https://www.edmundoptics.jp/knowledge-center/application-notes/lasers/gaussian-beam-propagation/
+\end{thebibliography}
+
+%%数式入力，各式に名前をつける
+%\begin{equation}
+%ここに数式を入れる
+%\label{eqn:}
+%\end{equation}
+%
+%図入力，図はeps file，各図に名前をつける
+%\begin{figure}[]
+%\begin{center}
+%\includegraphics{}%eps file 名を{}内へ入れる
+%\end{center}
+%\caption{}%figure captionを{}内へ入れる
+%\label{fig:}%図のラベルを:の後ろに入れる
+%\end{figure}
+%
+%本文中で図，数式の参照は，\ref{eq:E-1}や\ref{fig:}を使う
+%
+%
+
+\clearpage
+%
+
+\end{document}
